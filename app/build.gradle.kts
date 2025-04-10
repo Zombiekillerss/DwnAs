@@ -52,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 
     splits.abi {
@@ -76,6 +77,7 @@ dependencies {
     //implementation("io.github.junkfood02.youtubedl-android:aria2c:0.17.2")
     implementation (libs.rangeseekbar.library)
     implementation(libs.androidx.webkit)
+    implementation(libs.androidx.cardview)
 
     annotationProcessor(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
@@ -98,9 +100,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-}
-
-
-dependencies {
+    implementation(libs.androidx.recyclerview)
     add("ksp", libs.androidx.room.compiler)
 }

@@ -21,6 +21,8 @@ workRuntimeKtx = "2.9.0"
 media3Database = "1.4.0"
 androidxRoom = "2.7.0-alpha12"
 ksp = "2.0.21-1.0.27"
+recyclerview = "1.4.0"
+cardview = "1.0.0"
 
 
 [libraries]
@@ -54,6 +56,8 @@ androidx-media3-database = { group = "androidx.media3", name = "media3-database"
 youtubedl-android-library = { module = "io.github.junkfood02.youtubedl-android:library", version.ref = "libraryVersion" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidxRoom" }
+androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+androidx-cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -8,6 +8,8 @@ import androidx.room.PrimaryKey
 data class ListItemLink (
     @PrimaryKey
     val id: Int = 0,
-    @ColumnInfo(name="date")
+    @ColumnInfo(name="name")
+    val name: String,
+    @ColumnInfo(name="link")
     var link: String
 )
