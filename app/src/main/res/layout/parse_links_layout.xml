@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#238331"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/etURL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="ссылка"
+        android:inputType="text"
+        android:textColorHint="#69F450"
+        app:layout_constraintStart_toStartOf="@+id/editTextText4"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText4" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:backgroundTint="#DC205D"
+        android:text="удал"
+        app:layout_constraintBottom_toBottomOf="@+id/etURL"
+        app:layout_constraintStart_toEndOf="@+id/etURL"
+        app:layout_constraintTop_toTopOf="@+id/etURL" />
+
+    <EditText
+        android:id="@+id/etQuality"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="начало сегмента"
+        android:inputType="text"
+        android:textColorHint="#86F467"
+        app:layout_constraintStart_toStartOf="@+id/etURL"
+        app:layout_constraintTop_toBottomOf="@+id/etURL" />
+
+    <EditText
+        android:id="@+id/editTextText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="конец сегмента"
+        android:inputType="text"
+        android:textColorHint="#5DF842"
+        app:layout_constraintStart_toStartOf="@+id/etQuality"
+        app:layout_constraintTop_toBottomOf="@+id/etQuality" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#DC205D"
+        android:text="удал"
+        app:layout_constraintBottom_toBottomOf="@+id/etQuality"
+        app:layout_constraintStart_toStartOf="@+id/button3"
+        app:layout_constraintTop_toTopOf="@+id/etQuality" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#DC205D"
+        android:text="удал"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextText2"
+        app:layout_constraintStart_toStartOf="@+id/button4"
+        app:layout_constraintTop_toTopOf="@+id/editTextText2" />
+
+    <Button
+        android:id="@+id/bDownloadAudio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#CEC132"
+        android:text="загрузить аудио"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Button
+        android:id="@+id/bGetSegments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="#B93AEF"
+        android:text="Получить количество сегментов"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSegments" />
+
+    <Button
+        android:id="@+id/bDownloadVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#DFF206"
+        android:text="загрузить видео"
+        app:layout_constraintBottom_toBottomOf="@+id/bDownloadAudio"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bDownloadAudio"
+        app:layout_constraintTop_toTopOf="@+id/bDownloadAudio"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tvSegments"
+        android:layout_width="13dp"
+        android:layout_height="15dp"
+        android:layout_marginTop="40dp"
+        android:text="...."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="29dp"
+        android:text="...."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bGetSegments" />
+
+    <Button
+        android:id="@+id/button9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#9A47E9"
+        android:text="конвертировать"
+        app:layout_constraintEnd_toEndOf="@+id/bDownloadVideo"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/bDownloadVideo"
+        app:layout_constraintTop_toBottomOf="@+id/bDownloadVideo" />
+
+    <EditText
+        android:id="@+id/editTextText3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:hint="Путь до текстового файла"
+        android:inputType="text"
+        android:textColorHint="#A1F86A"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextText4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="имя текстового файла"
+        android:inputType="text"
+        android:textColorHint="#A1F86A"
+        app:layout_constraintStart_toStartOf="@+id/editTextText3"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText3" />
+
+    <Button
+        android:id="@+id/bGetLink"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#20E6D2"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextText3"
+        app:layout_constraintTop_toTopOf="@+id/editTextText3"
+        tools:layout_editor_absoluteX="226dp" />
+
+    <Button
+        android:id="@+id/bGetRequest"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#DC205D"
+        android:text="удал"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextText4"
+        app:layout_constraintEnd_toEndOf="@+id/bGetLink"
+        app:layout_constraintTop_toTopOf="@+id/editTextText4" />
+
+    <Button
+        android:id="@+id/button11"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#DC205D"
+        android:text="удал"
+        app:layout_constraintBottom_toBottomOf="@+id/bGetLink"
+        app:layout_constraintTop_toTopOf="@+id/bGetLink"
+        tools:layout_editor_absoluteX="304dp" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="Switch"
+        app:layout_constraintEnd_toEndOf="@+id/bDownloadAudio"
+        app:layout_constraintHorizontal_bias="0.552"
+        app:layout_constraintStart_toStartOf="@+id/bDownloadAudio"
+        app:layout_constraintTop_toBottomOf="@+id/bDownloadAudio" />
+</androidx.constraintlayout.widget.ConstraintLayout>

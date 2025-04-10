@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/purple_200">
+
+    <WebView
+        android:id="@+id/wv"
+        android:layout_width="409dp"
+        android:layout_height="90dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/bGetDataBuff"
+        android:layout_width="113dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="26dp"
+        android:background="#8E1CA9"
+        android:text="скопировать"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/etLink"
+        app:layout_constraintStart_toEndOf="@+id/etLink"
+        app:layout_constraintTop_toTopOf="@+id/etLink" />
+
+    <EditText
+        android:id="@+id/etLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="100dp"
+        android:ems="10"
+        android:hint="Ссылка"
+        android:inputType="text"
+        android:text="https://dzen.ru/video/watch/637dc229b3c2e13b6cd27f10?sid=1049673277915923"
+        android:textColorHint="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wv" />
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="144dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etLink" />
+</androidx.constraintlayout.widget.ConstraintLayout>
