@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dwnas.R
 import com.example.dwnas.database.ListItemManifests
-import com.example.dwnas.databinding.ListItemManifestBinding
+import com.example.dwnas.databinding.ListItemBinding
 
 
 class ItemManifestAdapter(private val listener: Listener): ListAdapter<ListItemManifests, ItemManifestAdapter.MyHolder>(
@@ -19,7 +19,7 @@ class ItemManifestAdapter(private val listener: Listener): ListAdapter<ListItemM
         view: View,
         listener: Listener
     ) : RecyclerView.ViewHolder(view) {
-        private val b = ListItemManifestBinding.bind(view)
+        private val b = ListItemBinding.bind(view)
         private var item1: ListItemManifests? = null
 
         init {
@@ -54,7 +54,7 @@ class ItemManifestAdapter(private val listener: Listener): ListAdapter<ListItemM
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.list_item_manifest, parent, false)
+            .inflate(R.layout.list_item, parent, false)
         return MyHolder(view, listener)
     }
 
@@ -63,7 +63,7 @@ class ItemManifestAdapter(private val listener: Listener): ListAdapter<ListItemM
     }
 
     interface Listener{
-        fun onClickSave(device: ListItemManifests)
-        fun onClickDelete(device: ListItemManifests)
+        fun onClickSave(manifest: ListItemManifests)
+        fun onClickDelete(manifest: ListItemManifests)
     }
 }

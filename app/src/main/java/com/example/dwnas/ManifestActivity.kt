@@ -18,7 +18,6 @@ import com.example.dwnas.database.DBRequestMaker
 import com.example.dwnas.database.ListItemLink
 import com.example.dwnas.database.ListItemManifests
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 
@@ -27,19 +26,21 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
     private lateinit var itemLinkAdapter: ItemLinkAdapter
     private lateinit var itemManifestAdapter: ItemManifestAdapter
     private lateinit var dB: DBRequestMaker
+    private lateinit var  webView: WebView
+    private lateinit var  bSaveLink: Button
+    private lateinit var  bDeleteLink: Button
+    private lateinit var  bHandleLinks: Button
+    private lateinit var  etLink: EditText
+    private lateinit var  etName: EditText
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.get_manifest_link)
-        val webView = findViewById<WebView>(R.id.wv)
-        val bSaveLink = findViewById<Button>(R.id.bSaveLink)
-        val bDeleteLink = findViewById<Button>(R.id.bDelLink)
-        dB = ViewModelProvider(this@ManifestActivity)[DBRequestMaker::class]
-        val bHandleLinks = findViewById<Button>(R.id.bGetMpdLinks)
-        val et = findViewById<EditText>(R.id.etLink)
-        val etName = findViewById<EditText>(R.id.etName)
+        initViews()
+
         initRcViews()
+        updateList()
         webView.getSettings().javaScriptEnabled = true
         Log.d("myresult request", "test")
         webView.webViewClient = object : WebViewClient() {
@@ -76,7 +77,7 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         }
 
         bSaveLink.setOnClickListener {
-            val item = ListItemLink(name = etName.text.toString(), link = et.text.toString())
+            val item = ListItemLink(name = etName.text.toString(), link = etLink.text.toString())
             lifecycleScope.launch(Dispatchers.Default) {
                 dB.addLink(this@ManifestActivity, item) {
                     updateList()
@@ -85,10 +86,10 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         }
 
         bDeleteLink.setOnClickListener {
-            et.text.clear()
+            etLink.text.clear()
         }
         bHandleLinks.setOnClickListener {
-            webView.loadUrl(et.text.toString())
+            webView.loadUrl(etLink.text.toString())
         }
     }
 
@@ -138,23 +139,31 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         return null
     }
 
-    override fun onClickSave(device: ListItemManifests) {
-        copyToClipboard(this@ManifestActivity, device.manifest)
+    override fun onClickSave(manifest: ListItemManifests) {
+        copyToClipboard(this@ManifestActivity, manifest.manifest)
     }
 
-    override fun onClickDelete(device: ListItemManifests) {
-        TODO("Not yet implemented")
+    override fun onClickDelete(manifest: ListItemManifests) {
+        lifecycleScope.launch {
+            dB.deleteManifest(this@ManifestActivity, manifest)
+            updateList()
+        }
     }
 
-    override fun onClickSave(device: ListItemLink) {
-        copyToClipboard(this@ManifestActivity, device.link)
+    override fun onClickSave(link: ListItemLink) {
+        copyToClipboard(this@ManifestActivity, link.link)
     }
 
-    override fun onClickDelete(device: ListItemLink) {
-        TODO("Not yet implemented")
+    override fun onClickDelete(link: ListItemLink) {
+        lifecycleScope.launch {
+            dB.deleteLink(this@ManifestActivity, link)
+            updateList()
+        }
     }
 
     private fun updateList() {
+        itemManifestAdapter.submitList(listOf())
+        itemLinkAdapter.submitList(listOf())
         lifecycleScope.launch {
             val linkList = mutableListOf<ListItemLink>()
             val manifestList = mutableListOf<ListItemManifests>()
@@ -180,4 +189,13 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         rcViewListLinks.adapter = itemLinkAdapter
     }
 
+    private fun initViews(){
+        webView = findViewById(R.id.wv)
+        bSaveLink = findViewById(R.id.bSaveLink)
+        bDeleteLink = findViewById(R.id.bDelLink)
+        bHandleLinks = findViewById(R.id.bGetMpdLinks)
+        etLink = findViewById(R.id.etLink)
+        etName = findViewById(R.id.etName)
+        dB = ViewModelProvider(this@ManifestActivity)[DBRequestMaker::class]
+    }
 }

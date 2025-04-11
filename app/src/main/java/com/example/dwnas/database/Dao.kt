@@ -1,6 +1,7 @@
 package com.example.dwnas.database
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,11 @@ interface Dao {
     fun getAllLinks(): Flow<List<ListItemLink>>
     @Query("SELECT * FROM Manifest")
     fun getAllManifests(): Flow<List<ListItemManifests>>
+
+    @Delete
+    fun deleteLink(link: ListItemLink)
+    @Delete
+    fun deleteManifest(link: ListItemManifests)
 
     @Query("DELETE FROM Link")
     fun deleteAllLinks()

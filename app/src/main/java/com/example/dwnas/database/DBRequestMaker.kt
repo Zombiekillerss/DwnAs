@@ -1,6 +1,5 @@
 package com.example.dwnas.database
 
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -21,6 +20,21 @@ class DBRequestMaker : ViewModel() {
                 continuation.resume(links ?: emptyList())
             }
         }
+
+    suspend fun deleteLink(activity: ComponentActivity,link: ListItemLink): String =
+        suspendCoroutine { continuation ->
+            deleteCurrentLink(activity, link) { links ->
+                continuation.resume(links)
+            }
+        }
+
+    suspend fun deleteManifest(activity: ComponentActivity, manifest: ListItemManifests): String =
+        suspendCoroutine { continuation ->
+            deleteCurrentManifest(activity, manifest) { manifests ->
+                continuation.resume(manifests)
+            }
+        }
+
 
     fun deleteAllLinks(context: ComponentActivity, onResult: (String) -> Unit) {
         val db = MainDb.getDb(context).getDao()
@@ -43,6 +57,18 @@ class DBRequestMaker : ViewModel() {
     fun addManifest(context: ComponentActivity, manifest: ListItemManifests) {
         val db = MainDb.getDb(context).getDao()
         db.insertManifest(manifest)
+    }
+
+    private fun deleteCurrentLink(context: ComponentActivity, link: ListItemLink, onResult: (String) -> Unit){
+        val db = MainDb.getDb(context).getDao()
+        db.deleteLink(link)
+        onResult("+")
+    }
+
+    private fun deleteCurrentManifest(context: ComponentActivity, manifest: ListItemManifests, onResult: (String) -> Unit){
+        val db = MainDb.getDb(context).getDao()
+        db.deleteManifest(manifest)
+        onResult("+")
     }
 
     private fun getListLinks(context: ComponentActivity, onResult: (List<ListItemLink>?) -> Unit) {
