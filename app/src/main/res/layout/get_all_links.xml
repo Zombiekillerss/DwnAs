@@ -9,7 +9,7 @@
     <WebView
         android:id="@+id/wv"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="250dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,24 +26,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etLink" />
 
-    <Button
-        android:id="@+id/bGetMpdLinks"
-        android:layout_width="116dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:background="#8E1CA9"
-        android:text="обработать"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/bSaveLink"
-        app:layout_constraintStart_toEndOf="@+id/bSaveLink"
-        app:layout_constraintTop_toTopOf="@+id/bSaveLink"
-        app:layout_constraintVertical_bias="1.0" />
-
     <EditText
         android:id="@+id/etLink"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="16dp"
         android:ems="10"
         android:hint="Ссылка"
         android:inputType="text"
@@ -51,7 +38,8 @@
         android:textColorHint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.838" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcLinks"
@@ -67,32 +55,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wv" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcManifests"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/rounded_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bSaveLink" />
-
     <Button
         android:id="@+id/bDelLink"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="164dp"
         android:background="#8E1CA9"
         android:text="Очистить"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/bGetMpdLinks"
-        app:layout_constraintStart_toEndOf="@+id/bGetMpdLinks"
-        app:layout_constraintTop_toTopOf="@+id/bGetMpdLinks"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintBottom_toBottomOf="@+id/bSaveLink"
+        app:layout_constraintStart_toEndOf="@+id/bSaveLink"
+        app:layout_constraintTop_toTopOf="@+id/bSaveLink" />
 
     <EditText
         android:id="@+id/etName"

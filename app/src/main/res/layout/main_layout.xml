@@ -11,10 +11,11 @@
         android:id="@+id/bParseLinks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="16dp"
         android:backgroundTint="#20E6D2"
         android:text="Скачать по тексту"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,27 +35,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:backgroundTint="#20E6D2"
-        android:text="request"
+        android:text="сохранить ссылки"
         app:layout_constraintEnd_toEndOf="@+id/bGetLink"
         app:layout_constraintTop_toBottomOf="@+id/bGetLink" />
-
-    <TextView
-        android:id="@+id/tvResultReq"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="116dp"
-        android:textColor="#32FF0E"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bGetRequest" />
-
-    <WebView
-        android:id="@+id/wv"
-        android:layout_width="409dp"
-        android:layout_height="90dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
