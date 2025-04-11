@@ -35,6 +35,13 @@ class DBRequestMaker : ViewModel() {
             }
         }
 
+    suspend fun deleteAllManifests(activity: ComponentActivity): String =
+        suspendCoroutine { continuation ->
+            removeAllManifests(activity) { manifests ->
+                continuation.resume(manifests)
+            }
+        }
+
 
     fun deleteAllLinks(context: ComponentActivity, onResult: (String) -> Unit) {
         val db = MainDb.getDb(context).getDao()
@@ -42,7 +49,7 @@ class DBRequestMaker : ViewModel() {
         onResult("+")
     }
 
-    fun deleteAllManifests(context: ComponentActivity, onResult: (String) -> Unit) {
+    private fun removeAllManifests(context: ComponentActivity, onResult: (String) -> Unit) {
         val db = MainDb.getDb(context).getDao()
         db.deleteAllManifests()
         onResult("+")
@@ -54,9 +61,10 @@ class DBRequestMaker : ViewModel() {
         onResult("+")
     }
 
-    fun addManifest(context: ComponentActivity, manifest: ListItemManifests) {
+    fun addManifest(context: ComponentActivity, manifest: ListItemManifests, onResult: (String) -> Unit) {
         val db = MainDb.getDb(context).getDao()
         db.insertManifest(manifest)
+        onResult("+")
     }
 
     private fun deleteCurrentLink(context: ComponentActivity, link: ListItemLink, onResult: (String) -> Unit){

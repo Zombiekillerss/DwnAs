@@ -22,6 +22,7 @@ import com.example.dwnas.database.ListItemManifests
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 
 
@@ -36,6 +37,7 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
     private lateinit var bHandleLinks: Button
     private lateinit var etLink: EditText
     private lateinit var etName: EditText
+    private var isPageLoaded = false
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,10 +63,17 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
 
         bHandleLinks.setOnClickListener {
             val list = itemLinkAdapter.currentList
-            lifecycleScope.launch {
+            lifecycleScope.launch(Dispatchers.IO) {
+                dB.deleteAllManifests(this@ManifestActivity)
                 for (item in list) {
-                    loadUrlAndWait(item.link)
-
+                    try {
+                        withContext(Dispatchers.Main) {  // Переключаемся на UI-поток
+                            loadUrlAndWait(item.link, item.name)
+                        }
+                        isPageLoaded = false
+                    } catch (e: Exception) {
+                        Log.d("myresult request", e.message.toString())
+                    }
                 }
             }
 
@@ -176,51 +185,72 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         return null
     }
 
-    private suspend fun loadUrlAndWait(url: String): String = suspendCancellableCoroutine { continuation ->
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                webView.evaluateJavascript(
-                    "(function() { return document.documentElement.outerHTML; })();"
-                ) { html ->
-                    lifecycleScope.launch {
-                        val unescapedHtml = html
-                            .replace("\\u003C", "<")
-                            .replace("\\u003E", ">")
-                            .replace("\\\"", "\"")
-                            .removeSurrounding("\"")
-                        val scriptContents = extractScriptContents(unescapedHtml)
+    private suspend fun loadUrlAndWait(url: String, name: String): String =
+        suspendCancellableCoroutine { continuation ->
+            webView.webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    if (isPageLoaded) return
+                    isPageLoaded = true
+                    webView.evaluateJavascript(
+                        "(function() { return document.documentElement.outerHTML; })();"
+                    ) { html ->
 
-                        val targetFunction = findFunctionInScripts(scriptContents)
+                        lifecycleScope.launch(Dispatchers.Default) {
+                            val unescapedHtml = html
+                                .replace("\\u003C", "<")
+                                .replace("\\u003E", ">")
+                                .replace("\\\"", "\"")
+                                .removeSurrounding("\"")
+                            val scriptContents = extractScriptContents(unescapedHtml)
+                            val targetFunction = findFunctionInScripts(scriptContents)
 
-
-                        if (targetFunction != null) {
-                            Log.d("myresult request", targetFunction.toString())
-                            runOnUiThread {
+                            if (targetFunction != null) {
+                                Log.d("myresult request", targetFunction.toString())
+                                val manifest =
+                                    ListItemManifests(name = name, manifest = targetFunction[1])
+                                dB.addManifest(this@ManifestActivity, manifest) {
+                                    Log.d("myresult request", it)
+                                    updateList()
+                                }
+                            } else {
+                                Log.d("myresult request", "Функция не найдена")
+                            }
+                            try{
+                                continuation.resume("+")
+                            }catch (e:Exception){
+                                Log.d("myresult request", e.message.toString())
 
                             }
-                        } else {
-                            Log.d("myresult request", "Функция не найдена")
                         }
                     }
                 }
-                continuation.resume("+")
+
+                override fun onReceivedError(
+                    view: WebView?,
+                    request: WebResourceRequest?,
+                    error: WebResourceError?
+                ) {
+                    super.onReceivedError(view, request, error)
+                    isPageLoaded = true
+                    Log.d("myresult request", "Функция не найдена")
+                    try{
+                        continuation.resume("-")
+                    }catch (e:Exception){
+                        Log.d("myresult request", e.message.toString())
+
+                    }
+                }
             }
 
-            override fun onReceivedError(
-                view: WebView?,
-                request: WebResourceRequest?,
-                error: WebResourceError?
-            ) {
-                super.onReceivedError(view, request, error)
-                continuation.resume("-")
+            webView.loadUrl(url)
+
+            continuation.invokeOnCancellation {
+                Log.d("myresult request", "2Функция не найдена")
+
+                webView.webViewClient = WebViewClient()
+                Log.d("myresult request", "3Функция не найдена")
+
             }
         }
-
-        webView.loadUrl(url)
-
-        continuation.invokeOnCancellation {
-            webView.webViewClient = WebViewClient()
-        }
-    }
 }

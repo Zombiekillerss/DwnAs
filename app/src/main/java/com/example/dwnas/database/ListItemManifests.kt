@@ -8,8 +8,6 @@ import androidx.room.PrimaryKey
 data class ListItemManifests (
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    @ColumnInfo(name="idLink")
-    val idLink: Int,
     @ColumnInfo(name="manifest")
     val manifest: String,
     @ColumnInfo(name="name")
