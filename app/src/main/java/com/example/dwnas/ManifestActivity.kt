@@ -17,12 +17,15 @@ import com.example.dwnas.adapters.ItemManifestAdapter
 import com.example.dwnas.database.DBRequestMaker
 import com.example.dwnas.database.ListItemLink
 import com.example.dwnas.database.ListItemManifests
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 
 class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener, ItemLinkAdapter.Listener {
     private lateinit var itemLinkAdapter: ItemLinkAdapter
     private lateinit var itemManifestAdapter: ItemManifestAdapter
+    private lateinit var dB: DBRequestMaker
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,10 +34,10 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener, Item
         val webView = findViewById<WebView>(R.id.wv)
         val bSaveLink = findViewById<Button>(R.id.bSaveLink)
         val bDeleteLink = findViewById<Button>(R.id.bDelLink)
-        val db = ViewModelProvider(this@ManifestActivity)[DBRequestMaker::class]
+        dB = ViewModelProvider(this@ManifestActivity)[DBRequestMaker::class]
         val bHandleLinks = findViewById<Button>(R.id.bGetMpdLinks)
         val et = findViewById<EditText>(R.id.etLink)
-        //val etName = findViewById<EditText>(R.id.etLink)
+        val etName = findViewById<EditText>(R.id.etName)
         initRcViews()
         webView.getSettings().javaScriptEnabled = true
         Log.d("myresult request", "test")
@@ -72,10 +75,14 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener, Item
         }
 
         bSaveLink.setOnClickListener {
-            val item = ListItemLink(name="name", link=et.text.toString())
-            lifecycleScope.launch {
-                db.insertLink(this@ManifestActivity, item)
-            }
+            val item = ListItemLink(name=etName.text.toString(), link=et.text.toString())
+                lifecycleScope.launch(Dispatchers.IO) {
+                        dB.insertLink(this@ManifestActivity, item)
+                    runOnUiThread {
+                        updateList()
+
+                    }
+                }
         }
 
         bDeleteLink.setOnClickListener{
@@ -147,6 +154,32 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener, Item
 
     override fun onClickDelete(device: ListItemLink) {
         TODO("Not yet implemented")
+    }
+
+    private fun updateList(){
+        try{
+            lifecycleScope.launch(Dispatchers.IO) {
+
+                try {
+                    val linkList = mutableListOf<ListItemLink>()
+                    val manifestList = mutableListOf<ListItemManifests>()
+                    manifestList.addAll(dB.getManifests(this@ManifestActivity))
+                    linkList.addAll(dB.getLinks(this@ManifestActivity))
+                    Log.d("myresult request",manifestList.toString())
+                    Log.d("myresult request",linkList.toString())
+                    itemManifestAdapter.submitList(manifestList)
+                    itemLinkAdapter.submitList(linkList)
+                }catch(e:Exception){
+                    Log.d("myresult request",e.message.toString())
+
+                }
+
+            }
+        }catch (e:Exception){
+            Log.d("myresult request",e.message.toString())
+
+        }
+
     }
 
     private fun initRcViews() {

@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Link")
 data class ListItemLink (
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     @ColumnInfo(name="name")
     val name: String,

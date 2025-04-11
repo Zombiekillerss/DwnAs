@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Manifest")
 data class ListItemManifests (
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     @ColumnInfo(name="idLink")
     val idLink: Int,
