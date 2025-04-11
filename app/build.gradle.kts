@@ -81,6 +81,10 @@ dependencies {
 
     annotationProcessor(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
+    add("ksp", libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
+
 
     implementation(libs.okhttp)
     implementation (libs.jsoup)
@@ -101,5 +105,4 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.recyclerview)
-    add("ksp", libs.androidx.room.compiler)
 }

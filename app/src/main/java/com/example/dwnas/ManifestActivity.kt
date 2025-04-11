@@ -7,22 +7,35 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.dwnas.adapters.ItemLinkAdapter
+import com.example.dwnas.adapters.ItemManifestAdapter
+import com.example.dwnas.database.DBRequestMaker
+import com.example.dwnas.database.ListItemLink
+import com.example.dwnas.database.ListItemManifests
 import kotlinx.coroutines.launch
-import org.json.JSONArray
-import org.json.JSONException
 
 
-class ManifestActivity : ComponentActivity() {
+class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener, ItemLinkAdapter.Listener {
+    private lateinit var itemLinkAdapter: ItemLinkAdapter
+    private lateinit var itemManifestAdapter: ItemManifestAdapter
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.get_manifest_link)
         val webView = findViewById<WebView>(R.id.wv)
-        val button = findViewById<Button>(R.id.bGetDataBuff)
+        val bSaveLink = findViewById<Button>(R.id.bSaveLink)
+        val bDeleteLink = findViewById<Button>(R.id.bDelLink)
+        val db = ViewModelProvider(this@ManifestActivity)[DBRequestMaker::class]
+        val bHandleLinks = findViewById<Button>(R.id.bGetMpdLinks)
         val et = findViewById<EditText>(R.id.etLink)
+        //val etName = findViewById<EditText>(R.id.etLink)
+        initRcViews()
         webView.getSettings().javaScriptEnabled = true
         Log.d("myresult request", "test")
         webView.webViewClient = object : WebViewClient() {
@@ -47,8 +60,7 @@ class ManifestActivity : ComponentActivity() {
                             Log.d("myresult request", targetFunction.toString())
                             copyToClipboard(this@ManifestActivity, targetFunction[1])
                             runOnUiThread{
-                                val text = findViewById<TextView>(R.id.tv)
-                                text.text = targetFunction[1]
+
                             }
                             // Используйте найденную функцию
                         } else {
@@ -59,10 +71,22 @@ class ManifestActivity : ComponentActivity() {
             }
         }
 
-        button.setOnClickListener {
+        bSaveLink.setOnClickListener {
+            val item = ListItemLink(name="name", link=et.text.toString())
+            lifecycleScope.launch {
+                db.insertLink(this@ManifestActivity, item)
+            }
+        }
+
+        bDeleteLink.setOnClickListener{
+            et.text.clear()
+        }
+        bHandleLinks.setOnClickListener{
             webView.loadUrl(et.text.toString())
         }
     }
+
+
 
     fun extractScriptContents(html: String): List<String> {
         val scriptContents = mutableListOf<String>()
@@ -107,6 +131,36 @@ class ManifestActivity : ComponentActivity() {
             }
         }
         return null
+    }
+
+    override fun onClickSave(device: ListItemManifests) {
+        copyToClipboard(this@ManifestActivity, device.manifest)
+    }
+
+    override fun onClickDelete(device: ListItemManifests) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickSave(device: ListItemLink) {
+        copyToClipboard(this@ManifestActivity, device.link)
+    }
+
+    override fun onClickDelete(device: ListItemLink) {
+        TODO("Not yet implemented")
+    }
+
+    private fun initRcViews() {
+        val rcViewListManifests = findViewById<RecyclerView>(R.id.rcManifests)
+        val rcViewListLinks = findViewById<RecyclerView>(R.id.rcLinks)
+
+        rcViewListManifests.layoutManager = LinearLayoutManager(this)
+        rcViewListLinks.layoutManager = LinearLayoutManager(this)
+
+        itemLinkAdapter = ItemLinkAdapter(this)
+        itemManifestAdapter = ItemManifestAdapter(this)
+
+        rcViewListManifests.adapter = itemManifestAdapter
+        rcViewListLinks.adapter = itemLinkAdapter
     }
 
 }
