@@ -42,6 +42,12 @@ class DBRequestMaker : ViewModel() {
             }
         }
 
+    suspend fun addLink(activity: ComponentActivity, link: ListItemLink):String =
+        suspendCoroutine { continuation ->
+            addCurrentLink(activity, link){
+                continuation.resume(it)
+            }
+        }
 
     fun deleteAllLinks(context: ComponentActivity, onResult: (String) -> Unit) {
         val db = MainDb.getDb(context).getDao()
@@ -55,7 +61,7 @@ class DBRequestMaker : ViewModel() {
         onResult("+")
     }
 
-    fun addLink(context: ComponentActivity, link: ListItemLink, onResult: (String) -> Unit) {
+    fun addCurrentLink(context: ComponentActivity, link: ListItemLink, onResult: (String) -> Unit) {
         val db = MainDb.getDb(context).getDao()
         db.insertLink(link)
         onResult("+")

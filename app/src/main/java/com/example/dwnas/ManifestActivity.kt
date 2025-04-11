@@ -54,15 +54,12 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
 
         bSaveLink.setOnClickListener {
             if (etLink.text.toString().contains("rutube.ru/plst")){
-                //val list = mutableListOf<String>()
-                setupWebView()
-                webView.loadUrl(etLink.text.toString())
+
             } else{
                 val item = ListItemLink(name = etName.text.toString(), link = etLink.text.toString())
                 lifecycleScope.launch(Dispatchers.Default) {
-                    dB.addLink(this@ManifestActivity, item) {
-                        updateList()
-                    }
+                    dB.addLink(this@ManifestActivity, item)
+                    updateList()
                 }
             }
         }
@@ -244,7 +241,6 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                 ) {
                     super.onReceivedError(view, request, error)
                     isPageLoaded = true
-                    Log.d("myresult request", "Функция не найдена")
                     try{
                         continuation.resume("-")
                     }catch (e:Exception){
@@ -257,101 +253,7 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
             webView.loadUrl(url)
 
             continuation.invokeOnCancellation {
-                Log.d("myresult request", "2Функция не найдена")
-
                 webView.webViewClient = WebViewClient()
-                Log.d("myresult request", "3Функция не найдена")
-
             }
         }
-
-
-
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun setupWebView() {
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                startScrollAndParse()
-            }
-        }
-    }
-
-    private fun startScrollAndParse() {
-        scrollToBottom()
-        Handler(Looper.getMainLooper()).postDelayed({
-            extractLinks()
-        }, 3000)
-    }
-
-    private fun scrollToBottom() {
-        webView.evaluateJavascript("""
-            window.scrollTo(0, document.body.scrollHeight);
-            true; // Возвращаем true для callback
-        """) { }
-    }
-
-    private fun extractLinks() {
-        webView.evaluateJavascript("""
-            (function() {
-                var videoCards = document.querySelectorAll('div.wdp-playlist-video-card-module__card article.wdp-playlist-video-card-module__content div.wdp-playlist-video-card-module__info a[href]');
-                var links = [];
-                for (var i = 0; i < videoCards.length; i++) {
-                    links.push(videoCards[i].getAttribute('href'));
-                }
-                
-                return links;
-            })();
-        """) { result ->
-            try {
-                val jsonArray = JSONArray(result)
-                val links = mutableListOf<String>()
-
-                for (i in 0 until jsonArray.length()) {
-                    links.add(jsonArray.getString(i))
-                }
-
-                // Теперь у вас есть все ссылки
-                Log.d("myresult request", "Found ${links.size} links")
-                for (link in links) {
-                    Log.d("myresult request", link)
-                }
-
-                // Если нужно проверить, есть ли еще контент для подгрузки
-                checkIfMoreContent()
-            } catch (e: Exception) {
-                Log.e("myresult request", "Failed to parse links", e)
-            }
-        }
-    }
-
-    private fun checkIfMoreContent() {
-        webView.evaluateJavascript("""
-            (function() {
-                // Проверяем, есть ли еще контент для подгрузки
-                // Это зависит от структуры вашей страницы
-                // Например, можно проверить наличие кнопки "Load more" или сравнить scrollHeight с текущей позицией
-                return {
-                    canScrollMore: window.innerHeight + window.scrollY < document.body.offsetHeight,
-                    currentScrollY: window.scrollY,
-                    scrollHeight: document.body.scrollHeight
-                };
-            })();
-        """) { result ->
-            try {
-                val json = JSONObject(result)
-                val canScrollMore = json.getBoolean("canScrollMore")
-
-                if (canScrollMore) {
-                    // Если есть еще контент, повторяем процесс
-                    startScrollAndParse()
-                } else {
-                    Log.d("myresult request", "All content loaded, total links parsed")
-                }
-            } catch (e: Exception) {
-                Log.e("myresult request", "Failed to check scroll status", e)
-            }
-        }
-    }
 }

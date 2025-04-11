@@ -45,6 +45,11 @@ class MainActivity : ComponentActivity() {
         requestRequiredPermissions()
         val bGet = findViewById<Button>(R.id.bGetLink)
         val bGetManifest = findViewById<Button>(R.id.bGetRequest)
+        val bGetPlaylist = findViewById<Button>(R.id.bGetPlaylist)
+        bGetPlaylist.setOnClickListener {
+            val i = Intent(this, AllLinksActivity::class.java)
+            startActivity(i)
+        }
         bGetManifest.setOnClickListener {
             val i = Intent(this, ManifestActivity::class.java)
             startActivity(i)
