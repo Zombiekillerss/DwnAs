@@ -22,7 +22,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 
-class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener, ItemLinkAdapter.Listener {
+class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
+    ItemLinkAdapter.Listener {
     private lateinit var itemLinkAdapter: ItemLinkAdapter
     private lateinit var itemManifestAdapter: ItemManifestAdapter
     private lateinit var dB: DBRequestMaker
@@ -62,7 +63,7 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener, Item
                         if (targetFunction != null) {
                             Log.d("myresult request", targetFunction.toString())
                             copyToClipboard(this@ManifestActivity, targetFunction[1])
-                            runOnUiThread{
+                            runOnUiThread {
 
                             }
                             // Используйте найденную функцию
@@ -75,24 +76,21 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener, Item
         }
 
         bSaveLink.setOnClickListener {
-            val item = ListItemLink(name=etName.text.toString(), link=et.text.toString())
-                lifecycleScope.launch(Dispatchers.IO) {
-                        dB.insertLink(this@ManifestActivity, item)
-                    runOnUiThread {
-                        updateList()
-
-                    }
+            val item = ListItemLink(name = etName.text.toString(), link = et.text.toString())
+            lifecycleScope.launch(Dispatchers.Default) {
+                dB.addLink(this@ManifestActivity, item) {
+                    updateList()
                 }
+            }
         }
 
-        bDeleteLink.setOnClickListener{
+        bDeleteLink.setOnClickListener {
             et.text.clear()
         }
-        bHandleLinks.setOnClickListener{
+        bHandleLinks.setOnClickListener {
             webView.loadUrl(et.text.toString())
         }
     }
-
 
 
     fun extractScriptContents(html: String): List<String> {
@@ -126,7 +124,7 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener, Item
                         if (openBraces == 0) {
                             // Нашли закрывающую скобку функции
                             var str = script.substring(startIndex, currentIndex + 1)
-                            if(str.contains("\"streams\"")) {
+                            if (str.contains("\"streams\"")) {
                                 str = str.substring(str.indexOf("\"streams\""))
                                 str = str.substring(str.indexOf('[') + 1, str.indexOf(']'))
                                 return str.split(',')
@@ -156,30 +154,16 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener, Item
         TODO("Not yet implemented")
     }
 
-    private fun updateList(){
-        try{
-            lifecycleScope.launch(Dispatchers.IO) {
+    private fun updateList() {
+        lifecycleScope.launch {
+            val linkList = mutableListOf<ListItemLink>()
+            val manifestList = mutableListOf<ListItemManifests>()
+            manifestList.addAll(dB.getManifests(this@ManifestActivity))
+            linkList.addAll(dB.getLinks(this@ManifestActivity))
 
-                try {
-                    val linkList = mutableListOf<ListItemLink>()
-                    val manifestList = mutableListOf<ListItemManifests>()
-                    manifestList.addAll(dB.getManifests(this@ManifestActivity))
-                    linkList.addAll(dB.getLinks(this@ManifestActivity))
-                    Log.d("myresult request",manifestList.toString())
-                    Log.d("myresult request",linkList.toString())
-                    itemManifestAdapter.submitList(manifestList)
-                    itemLinkAdapter.submitList(linkList)
-                }catch(e:Exception){
-                    Log.d("myresult request",e.message.toString())
-
-                }
-
-            }
-        }catch (e:Exception){
-            Log.d("myresult request",e.message.toString())
-
+            itemManifestAdapter.submitList(manifestList)
+            itemLinkAdapter.submitList(linkList)
         }
-
     }
 
     private fun initRcViews() {
