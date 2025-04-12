@@ -32,7 +32,7 @@ android {
             }
         }
     }
-
+//        android:roundIcon="@drawable/rounded_button"
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -64,17 +64,8 @@ android {
 }
 
 dependencies {
-//    implementation(libs.androidx.media3.exoplayer)
-//    implementation(libs.androidx.media3.exoplayer.dash)
-//    implementation(libs.androidx.media3.ui)
-//    implementation(libs.androidx.media3.database)
-//    implementation(libs.androidx.media3.datasource)
-
-
     implementation(libs.library.v0172)
     implementation(libs.ffmpeg)
-    //implementation(libs.prdownloader)
-    //implementation("io.github.junkfood02.youtubedl-android:aria2c:0.17.2")
     implementation (libs.rangeseekbar.library)
     implementation(libs.androidx.webkit)
     implementation(libs.androidx.cardview)
@@ -83,8 +74,6 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     add("ksp", libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
-
-
 
     implementation(libs.okhttp)
     implementation (libs.jsoup)

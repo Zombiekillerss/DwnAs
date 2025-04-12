@@ -11,6 +11,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -54,7 +55,7 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
 
         bSaveLink.setOnClickListener {
             if (etLink.text.toString().contains("rutube.ru/plst")){
-
+                Toast.makeText(this@ManifestActivity, "Нельзя установить плейлист", Toast.LENGTH_SHORT).show()
             } else{
                 val item = ListItemLink(name = etName.text.toString(), link = etLink.text.toString())
                 lifecycleScope.launch(Dispatchers.Default) {
@@ -74,7 +75,9 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                 dB.deleteAllManifests(this@ManifestActivity)
                 for (item in list) {
                     try {
-                        withContext(Dispatchers.Main) {  // Переключаемся на UI-поток
+                        if(!item.link.contains("dzen.ru"))
+                            continue
+                        withContext(Dispatchers.Main) {
                             loadUrlAndWait(item.link, item.name)
                         }
                         isPageLoaded = false
@@ -92,7 +95,7 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
     }
 
     override fun onClickDelete(manifest: ListItemManifests) {
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             dB.deleteManifest(this@ManifestActivity, manifest)
             updateList()
         }

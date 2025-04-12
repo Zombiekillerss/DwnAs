@@ -23,18 +23,25 @@ class ItemLinkAdapter(private val listener: Listener): ListAdapter<ListItemLink,
         private var item1: ListItemLink? = null
 
         init {
-            b.bCopyBuff.setOnClickListener {
-                item1?.let { it1 -> listener.onClickSave(it1) }
+            try{
+                b.bCopyBuff.setOnClickListener {
+                    item1?.let { it1 -> listener.onClickSave(it1) }
+                }
+                b.bDelObj.setOnClickListener {
+                    item1?.let { it1 -> listener.onClickDelete(it1) }
+                }
+            }catch (e:Exception){
+            Log.d("myresult request", e.message.toString())
+
             }
-            b.bDelObj.setOnClickListener {
-                item1?.let { it1 -> listener.onClickDelete(it1) }
-            }
+
         }
 
         fun bind(item: ListItemLink) = with(b) {
             item1 = item
             try {
-                tvLink.text = item1!!.link
+                val link = item1!!.link.substring(0, 30)
+                tvLink.text = link
                 tvName.text = item1!!.name
             } catch (e: SecurityException) {
                 Log.d("My error", e.message.toString())

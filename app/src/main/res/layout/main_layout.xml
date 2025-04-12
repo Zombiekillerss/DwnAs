@@ -11,7 +11,8 @@
         android:id="@+id/bGetPlaylist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/rounded_button"
         android:backgroundTint="#20E6D2"
         android:text="сохранить плейлист"
         app:layout_constraintEnd_toEndOf="@+id/bGetLink"
@@ -21,32 +22,44 @@
         android:id="@+id/bParseLinks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/rounded_button"
         android:backgroundTint="#20E6D2"
         android:text="Скачать по тексту"
+        app:layout_constraintBottom_toTopOf="@+id/bGetLink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/bGetLink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/rounded_button"
         android:backgroundTint="#20E6D2"
         android:text="Скачать по ссылке"
-        app:layout_constraintEnd_toEndOf="@+id/bParseLinks"
-        app:layout_constraintTop_toBottomOf="@+id/bParseLinks" />
+        app:layout_constraintBottom_toTopOf="@+id/divider2"
+        app:layout_constraintEnd_toEndOf="@+id/bParseLinks" />
 
     <Button
         android:id="@+id/bGetRequest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/rounded_button"
         android:backgroundTint="#20E6D2"
         android:text="сохранить ссылки"
         app:layout_constraintEnd_toEndOf="@+id/bGetLink"
-        app:layout_constraintTop_toBottomOf="@+id/bGetLink" />
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="409dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="444dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

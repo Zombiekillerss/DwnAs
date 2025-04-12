@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="60dp"
     android:layout_marginLeft="10dp"
     android:layout_marginTop="10dp"
     android:layout_marginRight="10dp"
@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#2BBA5B"
+        android:background="#247C47"
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="193dp">
 
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:text="TextView"
-            android:textColor="#0D48C8"
+            android:textColor="#30B8F2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -32,40 +32,34 @@
             android:id="@+id/tvLink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginBottom="6dp"
             android:text="TextView"
-            android:textColor="#8210BD"
-            app:layout_constraintEnd_toEndOf="@+id/tvName"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/tvName"
-            app:layout_constraintTop_toBottomOf="@+id/tvName" />
-
-        <Button
-            android:id="@+id/bCopyBuff"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="48dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="#1E86C7"
-            android:text="скопировать"
+            android:textColor="#C910DE"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLink"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
+        <ImageButton
             android:id="@+id/bDelObj"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="22dp"
-            android:backgroundTint="#BD2525"
-            android:text="Удалить"
-            app:layout_constraintBottom_toBottomOf="@+id/bCopyBuff"
+            android:layout_marginEnd="16dp"
+            android:background="#00FFFFFF"
+            android:src="@drawable/baseline_auto_delete_24"
+            app:layout_constraintBottom_toBottomOf="@+id/tvLink"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.509"
-            app:layout_constraintStart_toEndOf="@+id/bCopyBuff"
-            app:layout_constraintTop_toTopOf="@+id/bCopyBuff"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="@+id/tvName" />
+
+        <ImageButton
+            android:id="@+id/bCopyBuff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:background="#00FFFFFF"
+            android:src="@drawable/baseline_content_copy_24"
+            app:layout_constraintBottom_toBottomOf="@+id/tvLink"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvName" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
