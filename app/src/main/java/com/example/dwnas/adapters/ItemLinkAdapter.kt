@@ -40,7 +40,9 @@ class ItemLinkAdapter(private val listener: Listener): ListAdapter<ListItemLink,
         fun bind(item: ListItemLink) = with(b) {
             item1 = item
             try {
-                val link = item1!!.link.substring(0, 30)
+                var link = item1!!.link
+                if(link.length > 30)
+                    link = link.substring(0, 30)
                 tvLink.text = link
                 tvName.text = item1!!.name
             } catch (e: SecurityException) {

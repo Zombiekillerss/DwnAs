@@ -3,6 +3,7 @@ package com.example.dwnas.database
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -10,6 +11,12 @@ class DBRequestMaker : ViewModel() {
     suspend fun getManifests(activity: ComponentActivity): List<ListItemManifests> =
         suspendCoroutine { continuation ->
             getListManifests(activity) { manifests ->
+                continuation.resume(manifests ?: emptyList())
+            }
+        }
+    suspend fun getExistManifest(activity: ComponentActivity, manifest: String): List<ListItemManifests> =
+        suspendCoroutine { continuation ->
+            getExistManifest(activity, manifest) { manifests ->
                 continuation.resume(manifests ?: emptyList())
             }
         }
@@ -41,6 +48,12 @@ class DBRequestMaker : ViewModel() {
                 continuation.resume(manifests)
             }
         }
+    suspend fun deleteAllLinks(activity: ComponentActivity): String =
+        suspendCancellableCoroutine { continuation ->
+            deleteAllLinks(activity){
+                continuation.resume("+")
+            }
+        }
 
     suspend fun addLink(activity: ComponentActivity, link: ListItemLink):String =
         suspendCoroutine { continuation ->
@@ -49,7 +62,7 @@ class DBRequestMaker : ViewModel() {
             }
         }
 
-    fun deleteAllLinks(context: ComponentActivity, onResult: (String) -> Unit) {
+    private fun deleteAllLinks(context: ComponentActivity, onResult: (String) -> Unit) {
         val db = MainDb.getDb(context).getDao()
         db.deleteAllLinks()
         onResult("+")
@@ -95,6 +108,12 @@ class DBRequestMaker : ViewModel() {
     private fun getListManifests(context: ComponentActivity, onResult: (List<ListItemManifests>?) -> Unit) {
         val db = MainDb.getDb(context).getDao()
         db.getAllManifests().asLiveData().observe(context) {
+            onResult(it)
+        }
+    }
+    private fun getExistManifest(context: ComponentActivity, manifest: String, onResult: (List<ListItemManifests>?) -> Unit) {
+        val db = MainDb.getDb(context).getDao()
+        db.getExistManifest(manifest).asLiveData().observe(context) {
             onResult(it)
         }
     }

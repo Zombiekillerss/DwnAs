@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/purple_200">
+    android:background="#247C47">
 
     <WebView
         android:id="@+id/wv"
@@ -14,31 +14,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/bSaveLink"
-        android:layout_width="113dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:background="#8E1CA9"
-        android:text="сохранить"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etLink" />
-
-    <Button
-        android:id="@+id/bGetMpdLinks"
-        android:layout_width="116dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:background="#8E1CA9"
-        android:text="обработать"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/bSaveLink"
-        app:layout_constraintStart_toEndOf="@+id/bSaveLink"
-        app:layout_constraintTop_toTopOf="@+id/bSaveLink"
-        app:layout_constraintVertical_bias="1.0" />
-
     <EditText
         android:id="@+id/etLink"
         android:layout_width="180dp"
@@ -47,8 +22,8 @@
         android:ems="10"
         android:hint="Ссылка"
         android:inputType="text"
-        android:text="https://rutube.ru/plst/570974"
-        android:textColorHint="@color/black"
+        android:textColor="#30B8F2"
+        android:textColorHint="#30B8F2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -72,27 +47,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/rounded_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bSaveLink" />
-
-    <Button
-        android:id="@+id/bDelLink"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:background="#8E1CA9"
-        android:text="Очистить"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/bGetMpdLinks"
-        app:layout_constraintStart_toEndOf="@+id/bGetMpdLinks"
-        app:layout_constraintTop_toTopOf="@+id/bGetMpdLinks"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <EditText
         android:id="@+id/etName"
@@ -101,10 +63,148 @@
         android:layout_marginStart="11dp"
         android:layout_marginEnd="10dp"
         android:ems="10"
-        android:hint="Name"
+        android:hint="Название"
         android:inputType="text"
+        android:textColor="#30B8F2"
+        android:textColorHint="#30B8F2"
         app:layout_constraintBottom_toBottomOf="@+id/etLink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/etLink"
         app:layout_constraintTop_toTopOf="@+id/etLink" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/rcManifests"
+        app:layout_constraintEnd_toEndOf="@+id/rcManifests"
+        app:layout_constraintStart_toStartOf="@+id/rcManifests"
+        app:layout_constraintTop_toTopOf="@+id/rcManifests" />
+
+    <ImageButton
+        android:id="@+id/bIDelLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:backgroundTint="#00CA5959"
+        app:layout_constraintBottom_toBottomOf="@+id/etLink"
+        app:layout_constraintEnd_toEndOf="@+id/etLink"
+        app:layout_constraintTop_toTopOf="@+id/etLink"
+        app:layout_constraintVertical_bias="0.0"
+        android:src="@drawable/baseline_clear_24" />
+
+    <ImageButton
+        android:id="@+id/bIDelName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FAFAFA"
+        app:layout_constraintBottom_toBottomOf="@+id/etName"
+        app:layout_constraintEnd_toEndOf="@+id/etName"
+        app:layout_constraintTop_toTopOf="@+id/etName"
+        android:src="@drawable/baseline_clear_24" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etLink">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/bIGetMpdLinks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="#00FDFDFD"
+                android:src="@drawable/baseline_handle_24" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Обработать"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/bISaveLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="#00FFFFFF"
+                android:src="@drawable/baseline_data_saver_on_24" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="сохранить ссылку"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/bIDelAllLinks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="#00FFFFFF"
+                android:src="@drawable/baseline_delete_all_24" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Удалить ссылки"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/bIDelAllManifests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="#00FDFDFD"
+                android:src="@drawable/baseline_delete_all_24" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Удалить манифесты"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

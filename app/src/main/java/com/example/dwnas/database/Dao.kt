@@ -14,9 +14,9 @@ interface Dao {
     fun insertManifest(manifest: ListItemManifests)
 
     @Query("SELECT * FROM Link")
-    fun getAllLinks(): Flow<List<ListItemLink>>
+    fun getAllLinks(): Flow<List<ListItemLink>?>
     @Query("SELECT * FROM Manifest")
-    fun getAllManifests(): Flow<List<ListItemManifests>>
+    fun getAllManifests(): Flow<List<ListItemManifests>?>
 
     @Delete
     fun deleteLink(link: ListItemLink)
@@ -27,5 +27,8 @@ interface Dao {
     fun deleteAllLinks()
     @Query("DELETE FROM Manifest")
     fun deleteAllManifests()
+
+    @Query("SELECT * FROM Manifest where manifest=:link")
+    fun getExistManifest(link: String): Flow<List<ListItemManifests>?>
 
 }

@@ -1,16 +1,19 @@
 package com.example.dwnas
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
+import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
+import android.view.View
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModelProvider
@@ -22,12 +25,12 @@ import com.example.dwnas.adapters.ItemManifestAdapter
 import com.example.dwnas.database.DBRequestMaker
 import com.example.dwnas.database.ListItemLink
 import com.example.dwnas.database.ListItemManifests
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
-import org.json.JSONObject
 import kotlin.coroutines.resume
 
 
@@ -37,11 +40,15 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
     private lateinit var itemManifestAdapter: ItemManifestAdapter
     private lateinit var dB: DBRequestMaker
     private lateinit var webView: WebView
-    private lateinit var bSaveLink: Button
-    private lateinit var bDeleteLink: Button
-    private lateinit var bHandleLinks: Button
+    private lateinit var bSaveLink: ImageButton
+    private lateinit var bDeleteLink: ImageButton
+    private lateinit var bHandleLinks: ImageButton
+    private lateinit var bIDelAllLinks: ImageButton
+    private lateinit var bIDelAllManifests: ImageButton
+    private lateinit var bIDelName: ImageButton
     private lateinit var etLink: EditText
     private lateinit var etName: EditText
+    private lateinit var progressBar: ProgressBar
     private var isPageLoaded = false
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -50,15 +57,40 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         setContentView(R.layout.get_manifest_link)
         initViews()
         initRcViews()
-        updateList()
+        lifecycleScope.launch(Dispatchers.IO) {
+            updateList()
+        }
         Log.d("myresult request", "test")
 
+        bIDelAllLinks.setOnClickListener{
+            lifecycleScope.launch(Dispatchers.IO){
+                dB.deleteAllLinks(this@ManifestActivity)
+                updateList()
+            }
+        }
+
+        bIDelAllManifests.setOnClickListener{
+            lifecycleScope.launch(Dispatchers.IO){
+                dB.deleteAllManifests(this@ManifestActivity)
+                updateList()
+            }
+        }
+
+        bIDelName.setOnClickListener{
+            etName.text.clear()
+        }
+
         bSaveLink.setOnClickListener {
-            if (etLink.text.toString().contains("rutube.ru/plst")){
-                Toast.makeText(this@ManifestActivity, "Нельзя установить плейлист", Toast.LENGTH_SHORT).show()
-            } else{
-                val item = ListItemLink(name = etName.text.toString(), link = etLink.text.toString())
-                lifecycleScope.launch(Dispatchers.Default) {
+            if (etLink.text.toString().contains("rutube.ru/plst")) {
+                Toast.makeText(
+                    this@ManifestActivity,
+                    "Нельзя установить плейлист",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                val item =
+                    ListItemLink(name = etName.text.toString(), link = etLink.text.toString())
+                lifecycleScope.launch(Dispatchers.IO) {
                     dB.addLink(this@ManifestActivity, item)
                     updateList()
                 }
@@ -72,18 +104,42 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         bHandleLinks.setOnClickListener {
             val list = itemLinkAdapter.currentList
             lifecycleScope.launch(Dispatchers.IO) {
-                dB.deleteAllManifests(this@ManifestActivity)
-                for (item in list) {
+                var index = 0
+                var count = 0
+                withContext(Dispatchers.Main) {
+
+                    progressBar.visibility = View.VISIBLE
+                }
+
+                while(index < list.size) {
+                    val item = list[index]
                     try {
-                        if(!item.link.contains("dzen.ru"))
+                        if (!item.link.contains("dzen.ru"))
                             continue
                         withContext(Dispatchers.Main) {
-                            loadUrlAndWait(item.link, item.name)
+                            val lol = loadUrlAndWait(item.link, item.name)
+
+                            Log.d("myresult request", lol)
+                            if(lol == "+") {
+                                index++
+                                count = 0
+                            }else{
+                                count++
+                                if(count == 5) {
+                                    index++
+                                    count = 0
+                                }
+                            }
                         }
+                        Log.d("myresult request", "end")
+
                         isPageLoaded = false
                     } catch (e: Exception) {
                         Log.d("myresult request", e.message.toString())
                     }
+                }
+                withContext(Dispatchers.Main) {
+                    progressBar.visibility = View.INVISIBLE
                 }
             }
 
@@ -112,18 +168,17 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         }
     }
 
-    private fun updateList() {
+    private suspend fun updateList() {
         itemManifestAdapter.submitList(listOf())
         itemLinkAdapter.submitList(listOf())
-        lifecycleScope.launch {
-            val linkList = mutableListOf<ListItemLink>()
-            val manifestList = mutableListOf<ListItemManifests>()
+        val linkList = mutableListOf<ListItemLink>()
+        val manifestList = mutableListOf<ListItemManifests>()
+        withContext(Dispatchers.Main) {
             manifestList.addAll(dB.getManifests(this@ManifestActivity))
             linkList.addAll(dB.getLinks(this@ManifestActivity))
-
-            itemManifestAdapter.submitList(manifestList)
-            itemLinkAdapter.submitList(linkList)
         }
+        itemManifestAdapter.submitList(manifestList)
+        itemLinkAdapter.submitList(linkList)
     }
 
     private fun initRcViews() {
@@ -145,11 +200,20 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         webView = findViewById(R.id.wv)
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
-        bSaveLink = findViewById(R.id.bSaveLink)
-        bDeleteLink = findViewById(R.id.bDelLink)
-        bHandleLinks = findViewById(R.id.bGetMpdLinks)
+
+        bSaveLink = findViewById(R.id.bISaveLink)
+        bHandleLinks = findViewById(R.id.bIGetMpdLinks)
+        bIDelAllLinks = findViewById(R.id.bIDelAllLinks)
+        bIDelAllManifests = findViewById(R.id.bIDelAllManifests)
+
+        bDeleteLink = findViewById(R.id.bIDelLink)
+        bIDelName = findViewById(R.id.bIDelName)
+
         etLink = findViewById(R.id.etLink)
         etName = findViewById(R.id.etName)
+
+        progressBar = findViewById(R.id.progressBar)
+        progressBar.visibility = View.INVISIBLE
         dB = ViewModelProvider(this@ManifestActivity)[DBRequestMaker::class]
     }
 
@@ -196,45 +260,110 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         return null
     }
 
-    private suspend fun loadUrlAndWait(url: String, name: String): String =
-        suspendCancellableCoroutine { continuation ->
-            webView.webViewClient = object : WebViewClient() {
-                override fun onPageFinished(view: WebView?, url: String?) {
-                    super.onPageFinished(view, url)
-                    if (isPageLoaded) return
-                    isPageLoaded = true
-                    webView.evaluateJavascript(
-                        "(function() { return document.documentElement.outerHTML; })();"
-                    ) { html ->
+    private suspend fun evaluateJavascriptSuspending(script: String): String? {
+        return suspendCancellableCoroutine { continuation ->
+            webView.postDelayed({
+                webView.evaluateJavascript(script) { result ->
+                    continuation.resume(result)
+                }
+            }, 500)
 
-                        lifecycleScope.launch(Dispatchers.Default) {
-                            val unescapedHtml = html
-                                .replace("\\u003C", "<")
-                                .replace("\\u003E", ">")
-                                .replace("\\\"", "\"")
-                                .removeSurrounding("\"")
-                            val scriptContents = extractScriptContents(unescapedHtml)
-                            val targetFunction = findFunctionInScripts(scriptContents)
+        }
+    }
 
-                            if (targetFunction != null) {
-                                Log.d("myresult request", targetFunction.toString())
-                                val manifest =
-                                    ListItemManifests(name = name, manifest = targetFunction[1])
-                                dB.addManifest(this@ManifestActivity, manifest) {
-                                    Log.d("myresult request", it)
-                                    updateList()
-                                }
-                            } else {
-                                Log.d("myresult request", "Функция не найдена")
-                            }
-                            try{
-                                continuation.resume("+")
-                            }catch (e:Exception){
-                                Log.d("myresult request", e.message.toString())
+    private suspend fun tryGetHtml(
+        name: String,
+        continuation: CancellableContinuation<String>
+    ) {
+        var html: String?
+        do {
+            delay(10)
+            html =
+                evaluateJavascriptSuspending("(function() { return document.documentElement.outerHTML; })();")
+        } while (html == null || html == "null")
+        Log.d("myresult request", html.toString())
+        withContext(Dispatchers.IO) {
+            val unescapedHtml = html
+                .replace("\\u003C", "<")
+                .replace("\\u003E", ">")
+                .replace("\\\"", "\"")
+                .removeSurrounding("\"")
+            val scriptContents = extractScriptContents(unescapedHtml)
+            val targetFunction = findFunctionInScripts(scriptContents)
 
-                            }
+            if (targetFunction != null) {
+                Log.d("myresult request", targetFunction.toString())
+                var manifestLink = targetFunction[1]
+                if (manifestLink.indexOf('"') != -1) {
+                    manifestLink =
+                        manifestLink.substring(manifestLink.indexOf('"') + 1)
+                    manifestLink =
+                        manifestLink.substring(0, manifestLink.indexOf('"'))
+                }
+                val manifest =
+                    ListItemManifests(
+                        name = name,
+                        manifest = manifestLink
+                    )
+                var res: List<ListItemManifests>
+                withContext(Dispatchers.Main) {
+                    res = dB.getExistManifest(
+                        this@ManifestActivity,
+                        manifest.manifest
+                    )
+                }
+                if (res.isEmpty()) {
+                    dB.addManifest(this@ManifestActivity, manifest) {
+                        Log.d("myresult request", it)
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            updateList()
+
                         }
                     }
+                }
+                try {
+                    continuation.resume("+")
+                } catch (e: Exception) {
+                    Log.d("myresult request", e.message.toString())
+
+                }
+            } else {
+                try {
+                    continuation.resume("-")
+                } catch (e: Exception) {
+                    Log.d("myresult request", e.message.toString())
+
+                }
+                Log.d("myresult request", "Функция не найдена")
+            }
+
+
+        }
+
+    }
+
+    private suspend fun loadUrlAndWait(url: String, name: String) =
+        suspendCancellableCoroutine { continuation ->
+            webView.webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): Boolean {
+                    return false
+                }
+
+                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                    super.onPageStarted(view, url, favicon)
+                }
+
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    if (isPageLoaded) return
+                    isPageLoaded = true
+                    lifecycleScope.launch {
+                        tryGetHtml(name, continuation)
+                    }
+                    Log.d("myresult request", "proba")
+                    super.onPageFinished(view, url)
                 }
 
                 override fun onReceivedError(
@@ -244,19 +373,18 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                 ) {
                     super.onReceivedError(view, request, error)
                     isPageLoaded = true
-                    try{
+                    try {
                         continuation.resume("-")
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
                         Log.d("myresult request", e.message.toString())
 
                     }
                 }
             }
-
             webView.loadUrl(url)
-
+            Log.d("myresult request", "testststts")
             continuation.invokeOnCancellation {
-                webView.webViewClient = WebViewClient()
+                webView.destroy()
             }
         }
 }

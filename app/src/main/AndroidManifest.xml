@@ -40,20 +40,28 @@
             android:foregroundServiceType="mediaPlayback|dataSync" />
 
         <activity
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"
             android:name=".DownloaderOnLinkActivity">
 
         </activity>
         <activity
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"
             android:name=".ManifestActivity">
 
         </activity>
 
         <activity
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"
             android:name=".AllLinksActivity">
 
         </activity>
 
         <activity
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.DwnAS">

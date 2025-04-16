@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/purple_200">
+    android:background="@color/purple_200"
+    android:backgroundTint="#247C47">
 
     <WebView
         android:id="@+id/wv"
@@ -20,7 +21,8 @@
         android:layout_height="47dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
-        android:background="#8E1CA9"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="#0F86DB"
         android:text="сохранить"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +37,8 @@
         android:hint="Ссылка"
         android:inputType="text"
         android:text="https://rutube.ru/plst/570974"
-        android:textColorHint="@color/black"
+        android:textColor="#30B8F2"
+        android:textColorHint="#30B8F2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -60,7 +63,8 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="164dp"
-        android:background="#8E1CA9"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="#0F86DB"
         android:text="Очистить"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/bSaveLink"
@@ -76,6 +80,8 @@
         android:ems="10"
         android:hint="Name"
         android:inputType="text"
+        android:textColor="#30B8F2"
+        android:textColorHint="#30B8F2"
         app:layout_constraintBottom_toBottomOf="@+id/etLink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/etLink"
