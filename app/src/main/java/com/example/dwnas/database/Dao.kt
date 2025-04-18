@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface Dao {
@@ -14,9 +13,9 @@ interface Dao {
     fun insertManifest(manifest: ListItemManifests)
 
     @Query("SELECT * FROM Link")
-    fun getAllLinks(): Flow<List<ListItemLink>?>
+    fun getAllLinks(): List<ListItemLink>?
     @Query("SELECT * FROM Manifest")
-    fun getAllManifests(): Flow<List<ListItemManifests>?>
+    fun getAllManifests(): List<ListItemManifests>?
 
     @Delete
     fun deleteLink(link: ListItemLink)
@@ -29,6 +28,6 @@ interface Dao {
     fun deleteAllManifests()
 
     @Query("SELECT * FROM Manifest where manifest=:link")
-    fun getExistManifest(link: String): Flow<List<ListItemManifests>?>
+    fun getExistManifest(link: String): List<ListItemManifests>?
 
 }

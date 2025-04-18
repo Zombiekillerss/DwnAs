@@ -36,19 +36,27 @@ import kotlin.coroutines.resume
 
 class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
     ItemLinkAdapter.Listener {
+
     private lateinit var itemLinkAdapter: ItemLinkAdapter
     private lateinit var itemManifestAdapter: ItemManifestAdapter
+
     private lateinit var dB: DBRequestMaker
+
     private lateinit var webView: WebView
+
     private lateinit var bSaveLink: ImageButton
-    private lateinit var bDeleteLink: ImageButton
     private lateinit var bHandleLinks: ImageButton
     private lateinit var bIDelAllLinks: ImageButton
     private lateinit var bIDelAllManifests: ImageButton
+
+    private lateinit var bDeleteLink: ImageButton
     private lateinit var bIDelName: ImageButton
+
     private lateinit var etLink: EditText
     private lateinit var etName: EditText
+
     private lateinit var progressBar: ProgressBar
+
     private var isPageLoaded = false
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -62,21 +70,21 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         }
         Log.d("myresult request", "test")
 
-        bIDelAllLinks.setOnClickListener{
-            lifecycleScope.launch(Dispatchers.IO){
+        bIDelAllLinks.setOnClickListener {
+            lifecycleScope.launch(Dispatchers.IO) {
                 dB.deleteAllLinks(this@ManifestActivity)
                 updateList()
             }
         }
 
-        bIDelAllManifests.setOnClickListener{
-            lifecycleScope.launch(Dispatchers.IO){
+        bIDelAllManifests.setOnClickListener {
+            lifecycleScope.launch(Dispatchers.IO) {
                 dB.deleteAllManifests(this@ManifestActivity)
                 updateList()
             }
         }
 
-        bIDelName.setOnClickListener{
+        bIDelName.setOnClickListener {
             etName.text.clear()
         }
 
@@ -107,25 +115,26 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                 var index = 0
                 var count = 0
                 withContext(Dispatchers.Main) {
-
                     progressBar.visibility = View.VISIBLE
                 }
 
-                while(index < list.size) {
+                while (index < list.size) {
                     val item = list[index]
                     try {
-                        if (!item.link.contains("dzen.ru"))
+                        if (!item.link.contains("dzen.ru")) {
+                            index++
                             continue
+                        }
                         withContext(Dispatchers.Main) {
                             val lol = loadUrlAndWait(item.link, item.name)
 
                             Log.d("myresult request", lol)
-                            if(lol == "+") {
+                            if (lol == "+") {
                                 index++
                                 count = 0
-                            }else{
+                            } else {
                                 count++
-                                if(count == 5) {
+                                if (count == 5) {
                                     index++
                                     count = 0
                                 }
@@ -173,10 +182,8 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         itemLinkAdapter.submitList(listOf())
         val linkList = mutableListOf<ListItemLink>()
         val manifestList = mutableListOf<ListItemManifests>()
-        withContext(Dispatchers.Main) {
-            manifestList.addAll(dB.getManifests(this@ManifestActivity))
-            linkList.addAll(dB.getLinks(this@ManifestActivity))
-        }
+        manifestList.addAll(dB.getManifests(this@ManifestActivity))
+        linkList.addAll(dB.getLinks(this@ManifestActivity))
         itemManifestAdapter.submitList(manifestList)
         itemLinkAdapter.submitList(linkList)
     }
