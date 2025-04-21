@@ -54,8 +54,6 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
 
     private lateinit var progressBar: ProgressBar
 
-    private var isPageLoaded = false
-
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,10 +66,8 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
 
         bIDelAllLinks.setOnClickListener {
             show(this, "Удаление", "Вы хотите удалить все ссылки?") {
-                Log.d("myresult request", it.toString())
                 if (it.toString() == "YES") {
                     lifecycleScope.launch(Dispatchers.IO) {
-
                         dB.deleteAllLinks(this@ManifestActivity)
                         updateList()
                     }
@@ -83,7 +79,6 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
 
         bIDelAllManifests.setOnClickListener {
             show(this, "Удаление", "Вы хотите удалить все Манифесты?") {
-                Log.d("myresult request", it.toString())
                 if (it.toString() == "YES") {
                     lifecycleScope.launch(Dispatchers.IO) {
                         dB.deleteAllManifests(this@ManifestActivity)
@@ -254,7 +249,7 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                     }
 
                 }
-                delay(1000)
+
                 withContext(Dispatchers.Main) {
                     progressBar.visibility = View.INVISIBLE
                 }
@@ -281,7 +276,6 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                 }
             }
         }
-        isPageLoaded = false
         return flag
     }
 
@@ -470,9 +464,6 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                 }
 
                 override fun onPageFinished(view: WebView?, url: String?) {
-                    if (isPageLoaded) return
-                    isPageLoaded = true
-
                     lifecycleScope.launch {
                         tryGetHtml(name, continuation)
                     }
@@ -486,7 +477,6 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                     error: WebResourceError?
                 ) {
                     super.onReceivedError(view, request, error)
-                    isPageLoaded = true
                     try {
                         continuation.resume("-")
                     } catch (e: Exception) {
@@ -496,9 +486,6 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                 }
             }
             webView.loadUrl(url)
-            continuation.invokeOnCancellation {
-                webView.destroy()
-            }
         }
 
 
