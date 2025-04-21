@@ -1,11 +1,13 @@
 package com.example.dwnas
 
+import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import java.io.File
 import java.io.IOException
 
@@ -26,6 +28,7 @@ fun getRootOfExternalStorage(file: File, context: Context): String {
     val path = file.absolutePath.toString()
     return path.replace("/Android/data/" + context.packageName + "/files", "")
 }
+
 fun isFolderExists(absPath: String): Boolean {
     val folder = File(absPath)
     return folder.exists() && folder.isDirectory
@@ -43,4 +46,28 @@ fun moveFileToMoviesFolder(context: Context, sourceUri: Uri, newFileUri: Uri) {
     } catch (e: IOException) {
         Log.e("MoveFile", "Ошибка: ${e.message}")
     }
+}
+
+enum class ResponseType {
+    YES, NO
+}
+
+fun show(context: ComponentActivity, title: String, message: String, onResponse: (r : ResponseType) -> Unit) {
+    val builder = AlertDialog.Builder(context)
+    builder.setTitle(title)
+    builder.setMessage(message)
+    builder.setIcon(android.R.drawable.ic_dialog_alert)
+
+    builder.setPositiveButton("Yes") { _, _ ->
+        onResponse(ResponseType.YES)
+    }
+
+    builder.setNegativeButton("No") { _, _ ->
+        onResponse(ResponseType.NO)
+    }
+
+    val alertDialog: AlertDialog = builder.create()
+
+    alertDialog.setCancelable(false)
+    alertDialog.show()
 }

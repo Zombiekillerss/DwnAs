@@ -2,22 +2,29 @@ package com.example.dwnas
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.ActivityInfo
+
 import android.net.Uri
+
 import android.os.Bundle
 import android.os.Environment
+
 import android.provider.DocumentsContract
 import android.util.Log
+
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
+
 import androidx.lifecycle.ViewModelProvider
+
 import com.example.dwnas.utils.DownloadState
 import com.example.dwnas.utils.DownloadViewModel
 import com.example.dwnas.utils.RequestMaker
+
 import java.io.File
 
 
@@ -29,8 +36,6 @@ class DownloaderOnLinkActivity : ComponentActivity() {
     private lateinit var downloadViewModel: DownloadViewModel
     private lateinit var requestMakerViewModel: RequestMaker
 
-
-    private val currentLinks = mutableListOf<String>()
     private var currentUri: Uri? = null
     private var downloadUri: Uri? = null
 
@@ -184,7 +189,6 @@ class DownloaderOnLinkActivity : ComponentActivity() {
                     progress = state.percent.toInt()
                     textResult = "Загружено: ${state.percent.toInt()}%"
                     Log.d("myresult request", textResult)
-
                 }
 
                 is DownloadState.Success -> {

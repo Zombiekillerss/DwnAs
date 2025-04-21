@@ -1,8 +1,6 @@
 package com.example.dwnas
 
 import android.annotation.SuppressLint
-import android.content.pm.ActivityInfo
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,7 +8,6 @@ import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
@@ -68,20 +65,33 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         lifecycleScope.launch(Dispatchers.IO) {
             updateList()
         }
-        Log.d("myresult request", "test")
 
         bIDelAllLinks.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                dB.deleteAllLinks(this@ManifestActivity)
-                updateList()
+            show(this, "Удаление", "Вы хотите удалить все ссылки?") {
+                Log.d("myresult request", it.toString())
+                if (it.toString() == "YES") {
+                    lifecycleScope.launch(Dispatchers.IO) {
+
+                        dB.deleteAllLinks(this@ManifestActivity)
+                        updateList()
+                    }
+                }
             }
+
+
         }
 
         bIDelAllManifests.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                dB.deleteAllManifests(this@ManifestActivity)
-                updateList()
+            show(this, "Удаление", "Вы хотите удалить все Манифесты?") {
+                Log.d("myresult request", it.toString())
+                if (it.toString() == "YES") {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        dB.deleteAllManifests(this@ManifestActivity)
+                        updateList()
+                    }
+                }
             }
+
         }
 
         bIDelName.setOnClickListener {
@@ -98,6 +108,7 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
             } else {
                 val item =
                     ListItemLink(name = etName.text.toString(), link = etLink.text.toString())
+
                 lifecycleScope.launch(Dispatchers.IO) {
                     dB.addLink(this@ManifestActivity, item)
                     updateList()
@@ -110,48 +121,58 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         }
 
         bHandleLinks.setOnClickListener {
-            val list = itemLinkAdapter.currentList
             lifecycleScope.launch(Dispatchers.IO) {
+                val list = itemLinkAdapter.currentList
+
                 var index = 0
                 var count = 0
-                withContext(Dispatchers.Main) {
-                    progressBar.visibility = View.VISIBLE
-                }
+                var flag: Boolean
 
-                while (index < list.size) {
-                    val item = list[index]
-                    try {
-                        if (!item.link.contains("dzen.ru")) {
-                            index++
-                            continue
+                if (progressBar.visibility == View.VISIBLE) {
+                    withContext(Dispatchers.Main) {
+                        try {
+                            Toast.makeText(
+                                this@ManifestActivity,
+                                "Нельзя спарсить в данный момент",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } catch (e: Exception) {
+                            Log.d("myresult request", e.message.toString())
+
                         }
-                        withContext(Dispatchers.Main) {
-                            val lol = loadUrlAndWait(item.link, item.name)
 
-                            Log.d("myresult request", lol)
-                            if (lol == "+") {
+                    }
+
+                } else {
+                    withContext(Dispatchers.Main) {
+                        progressBar.visibility = View.VISIBLE
+                    }
+                    while (index < list.size) {
+                        val item = list[index]
+                        try {
+                            flag = loadItem(item, count)
+                            if (flag) {
+                                count++
+                            } else {
+                                count = 0
+                                index++
+                            }
+                            if (count == 5) {
                                 index++
                                 count = 0
-                            } else {
-                                count++
-                                if (count == 5) {
-                                    index++
-                                    count = 0
-                                }
                             }
+                            Log.d("myresult request", count.toString())
+                        } catch (e: Exception) {
+                            Log.d("myresult request", e.message.toString())
                         }
-                        Log.d("myresult request", "end")
-
-                        isPageLoaded = false
-                    } catch (e: Exception) {
-                        Log.d("myresult request", e.message.toString())
+                    }
+                    withContext(Dispatchers.Main) {
+                        progressBar.visibility = View.INVISIBLE
                     }
                 }
-                withContext(Dispatchers.Main) {
-                    progressBar.visibility = View.INVISIBLE
-                }
-            }
 
+
+            }
         }
     }
 
@@ -175,6 +196,72 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
             dB.deleteLink(this@ManifestActivity, link)
             updateList()
         }
+    }
+
+    override fun onHandle(item: ListItemLink) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            var flag = true
+            var count = 0
+
+            if (progressBar.visibility == View.VISIBLE) {
+                withContext(Dispatchers.Main) {
+                    try {
+                        Toast.makeText(
+                            this@ManifestActivity,
+                            "Нельзя спарсить в данный момент",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } catch (e: Exception) {
+                        Log.d("myresult request", e.message.toString())
+
+                    }
+
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    progressBar.visibility = View.VISIBLE
+                }
+                while (flag) {
+                    try {
+                        flag = loadItem(item, count)
+                        if (flag)
+                            count++
+                        if (count == 6) {
+                            break
+                        }
+
+                        Log.d("myresult request", count.toString())
+
+                    } catch (e: Exception) {
+                        Log.d("myresult request", e.message.toString())
+                    }
+
+                }
+                withContext(Dispatchers.Main) {
+                    progressBar.visibility = View.INVISIBLE
+                }
+            }
+        }
+    }
+
+    private suspend fun loadItem(item: ListItemLink, count: Int): Boolean {
+        var flag = true
+        if (!item.link.contains("dzen.ru")) {
+            return false
+        }
+        withContext(Dispatchers.Main) {
+            val signal = loadUrlAndWait(item.link, item.name)
+
+            if (signal == "+") {
+                flag = false
+            } else {
+                if (count == 5) {
+                    flag = false
+                }
+            }
+        }
+        isPageLoaded = false
+        return flag
     }
 
     private suspend fun updateList() {
@@ -264,6 +351,7 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                 currentIndex++
             }
         }
+
         return null
     }
 
@@ -274,7 +362,6 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                     continuation.resume(result)
                 }
             }, 500)
-
         }
     }
 
@@ -283,64 +370,66 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         continuation: CancellableContinuation<String>
     ) {
         var html: String?
+
         do {
             delay(10)
             html =
                 evaluateJavascriptSuspending("(function() { return document.documentElement.outerHTML; })();")
         } while (html == null || html == "null")
-        Log.d("myresult request", html.toString())
+
         withContext(Dispatchers.IO) {
             val unescapedHtml = html
                 .replace("\\u003C", "<")
                 .replace("\\u003E", ">")
                 .replace("\\\"", "\"")
                 .removeSurrounding("\"")
+
             val scriptContents = extractScriptContents(unescapedHtml)
             val targetFunction = findFunctionInScripts(scriptContents)
 
             if (targetFunction != null) {
-                Log.d("myresult request", targetFunction.toString())
                 var manifestLink = targetFunction[1]
+
                 if (manifestLink.indexOf('"') != -1) {
                     manifestLink =
                         manifestLink.substring(manifestLink.indexOf('"') + 1)
                     manifestLink =
                         manifestLink.substring(0, manifestLink.indexOf('"'))
                 }
+
                 val manifest =
                     ListItemManifests(
                         name = name,
                         manifest = manifestLink
                     )
-                var res: List<ListItemManifests>
-                withContext(Dispatchers.Main) {
-                    res = dB.getExistManifest(
-                        this@ManifestActivity,
-                        manifest.manifest
-                    )
-                }
+
+                val res: List<ListItemManifests> = dB.getExistManifest(
+                    this@ManifestActivity,
+                    manifest.manifest
+                )
+
                 if (res.isEmpty()) {
                     dB.addManifest(this@ManifestActivity, manifest) {
-                        Log.d("myresult request", it)
                         lifecycleScope.launch(Dispatchers.IO) {
                             updateList()
 
                         }
                     }
                 }
+
                 try {
                     continuation.resume("+")
                 } catch (e: Exception) {
                     Log.d("myresult request", e.message.toString())
-
                 }
+
             } else {
                 try {
                     continuation.resume("-")
                 } catch (e: Exception) {
                     Log.d("myresult request", e.message.toString())
-
                 }
+
                 Log.d("myresult request", "Функция не найдена")
             }
 
@@ -359,17 +448,14 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                     return false
                 }
 
-                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                    super.onPageStarted(view, url, favicon)
-                }
-
                 override fun onPageFinished(view: WebView?, url: String?) {
                     if (isPageLoaded) return
                     isPageLoaded = true
+
                     lifecycleScope.launch {
                         tryGetHtml(name, continuation)
                     }
-                    Log.d("myresult request", "proba")
+
                     super.onPageFinished(view, url)
                 }
 
@@ -389,9 +475,10 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                 }
             }
             webView.loadUrl(url)
-            Log.d("myresult request", "testststts")
             continuation.invokeOnCancellation {
                 webView.destroy()
             }
         }
+
+
 }

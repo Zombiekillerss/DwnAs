@@ -7,6 +7,64 @@
     android:background="@color/purple_200"
     android:backgroundTint="#247C47">
 
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etLink">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/bISaveLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="#00FFFFFF"
+                android:src="@drawable/baseline_data_saver_on_24" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="сохранить плейлист"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/bIDelAllLinks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="#00FFFFFF"
+                android:src="@drawable/baseline_delete_all_24" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Удалить ссылки"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
+
     <WebView
         android:id="@+id/wv"
         android:layout_width="0dp"
@@ -14,19 +72,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/bSaveLink"
-        android:layout_width="113dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/rounded_button"
-        android:backgroundTint="#0F86DB"
-        android:text="сохранить"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etLink" />
 
     <EditText
         android:id="@+id/etLink"
@@ -58,19 +103,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wv" />
 
-    <Button
-        android:id="@+id/bDelLink"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="164dp"
-        android:background="@drawable/rounded_button"
-        android:backgroundTint="#0F86DB"
-        android:text="Очистить"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/bSaveLink"
-        app:layout_constraintStart_toEndOf="@+id/bSaveLink"
-        app:layout_constraintTop_toTopOf="@+id/bSaveLink" />
-
     <EditText
         android:id="@+id/etName"
         android:layout_width="180dp"
@@ -78,7 +110,7 @@
         android:layout_marginStart="11dp"
         android:layout_marginEnd="10dp"
         android:ems="10"
-        android:hint="Name"
+        android:hint="[3=3эл] Н {3 = 3 4 5}"
         android:inputType="text"
         android:textColor="#30B8F2"
         android:textColorHint="#30B8F2"
@@ -86,4 +118,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/etLink"
         app:layout_constraintTop_toTopOf="@+id/etLink" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="#2E1AE4"
+        app:layout_constraintBottom_toTopOf="@+id/etLink"
+        app:layout_constraintEnd_toEndOf="@+id/rcLinks"
+        app:layout_constraintStart_toStartOf="@+id/rcLinks"
+        app:layout_constraintTop_toTopOf="@+id/rcLinks" />
+
+    <ImageButton
+        android:id="@+id/bIDelLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="1dp"
+        android:backgroundTint="#00FAFAFA"
+        android:src="@drawable/baseline_clear_24"
+        app:layout_constraintBottom_toBottomOf="@+id/etLink"
+        app:layout_constraintEnd_toEndOf="@+id/etLink"
+        app:layout_constraintTop_toTopOf="@+id/etLink" />
+
+    <ImageButton
+        android:id="@+id/bIDelName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FAFAFA"
+        android:src="@drawable/baseline_clear_24"
+        app:layout_constraintBottom_toBottomOf="@+id/etName"
+        app:layout_constraintEnd_toEndOf="@+id/etName"
+        app:layout_constraintTop_toTopOf="@+id/etName" />
 </androidx.constraintlayout.widget.ConstraintLayout>

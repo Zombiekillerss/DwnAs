@@ -24,6 +24,7 @@ class ItemManifestAdapter(private val listener: Listener): ListAdapter<ListItemM
 
         init {
             try{
+                b.bIGetMpdLinks.visibility = View.INVISIBLE
                 b.bCopyBuff.setOnClickListener {
                     item1?.let { it1 -> listener.onClickSave(it1) }
                 }
@@ -41,7 +42,7 @@ class ItemManifestAdapter(private val listener: Listener): ListAdapter<ListItemM
             try {
                 var link = item1!!.manifest
                 if(link.length > 30)
-                    link = link.substring(0, 30)
+                    link = link.split('/').last().substring(0, 30)
                 tvLink.text = link
                 tvName.text = item1!!.name
             } catch (e: SecurityException) {

@@ -1,17 +1,19 @@
 package com.example.dwnas
 
 import android.annotation.SuppressLint
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +24,7 @@ import com.example.dwnas.database.ListItemLink
 import com.example.dwnas.database.ListItemManifests
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -29,10 +32,17 @@ class AllLinksActivity: ComponentActivity(), ItemLinkAdapter.Listener {
         private lateinit var itemLinkAdapter: ItemLinkAdapter
         private lateinit var dB: DBRequestMaker
         private lateinit var webView: WebView
-        private lateinit var bSaveLink: Button
-        private lateinit var bDeleteLink: Button
+        private lateinit var bSaveLink: ImageButton
+
+        private lateinit var bIDeleteLink: ImageButton
+        private lateinit var bIDeleteName: ImageButton
+        private lateinit var bIDeleteLinks: ImageButton
+
         private lateinit var etLink: EditText
         private lateinit var etName: EditText
+
+        private lateinit var progressBar: ProgressBar
+
         private var oneCount: Int = 0
         private var twoCount: Int = 0
         private var threeCount: Int = 0
@@ -52,15 +62,36 @@ class AllLinksActivity: ComponentActivity(), ItemLinkAdapter.Listener {
                     webView.loadUrl(etLink.text.toString())
                 } else{
                     val item = ListItemLink(name = etName.text.toString(), link = etLink.text.toString())
-                    lifecycleScope.launch(Dispatchers.Default) {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        withContext(Dispatchers.Main){
+                            progressBar.visibility = View.VISIBLE
+                        }
                         dB.addLink(this@AllLinksActivity, item)
                         updateList()
+                        withContext(Dispatchers.Main){
+                            progressBar.visibility = View.INVISIBLE
+                        }
                     }
                 }
             }
 
-            bDeleteLink.setOnClickListener {
+            bIDeleteLink.setOnClickListener {
                 etLink.text.clear()
+            }
+            bIDeleteName.setOnClickListener {
+                etName.text.clear()
+            }
+            bIDeleteLinks.setOnClickListener {
+                show(this, "Удаление", "Вы хотите удалить все ссылки?"){
+                    Log.d("myresult request", it.toString())
+                    if(it.toString() == "YES") {
+                        lifecycleScope.launch(Dispatchers.IO){
+                            dB.deleteAllLinks(this@AllLinksActivity)
+                            updateList()
+                        }
+                    }
+                }
+
             }
         }
 
@@ -75,7 +106,11 @@ class AllLinksActivity: ComponentActivity(), ItemLinkAdapter.Listener {
             }
         }
 
-        private fun updateList() {
+    override fun onHandle(item: ListItemLink) {
+        return
+    }
+
+    private fun updateList() {
             itemLinkAdapter.submitList(listOf())
             lifecycleScope.launch {
                 val linkList = mutableListOf<ListItemLink>()
@@ -91,7 +126,7 @@ class AllLinksActivity: ComponentActivity(), ItemLinkAdapter.Listener {
 
             rcViewListLinks.layoutManager = LinearLayoutManager(this)
 
-            itemLinkAdapter = ItemLinkAdapter(this)
+            itemLinkAdapter = ItemLinkAdapter(this, false)
 
             rcViewListLinks.adapter = itemLinkAdapter
         }
@@ -101,10 +136,18 @@ class AllLinksActivity: ComponentActivity(), ItemLinkAdapter.Listener {
             webView = findViewById(R.id.wv)
             webView.settings.javaScriptEnabled = true
             webView.settings.domStorageEnabled = true
-            bSaveLink = findViewById(R.id.bSaveLink)
-            bDeleteLink = findViewById(R.id.bDelLink)
+            bSaveLink = findViewById(R.id.bISaveLink)
+
+            bIDeleteLink = findViewById(R.id.bIDelLink)
+            bIDeleteName = findViewById(R.id.bIDelName)
+            bIDeleteLinks = findViewById(R.id.bIDelAllLinks)
+
+            progressBar = findViewById(R.id.progressBar)
+            progressBar.visibility = View.INVISIBLE
+
             etLink = findViewById(R.id.etLink)
             etName = findViewById(R.id.etName)
+
             dB = ViewModelProvider(this@AllLinksActivity)[DBRequestMaker::class]
         }
 
@@ -113,6 +156,9 @@ class AllLinksActivity: ComponentActivity(), ItemLinkAdapter.Listener {
             webView.webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
+
+                    progressBar.visibility = View.VISIBLE
+
                     try {
                         val links = mutableListOf<String>()
                         val str = etName.text.toString()
@@ -125,6 +171,7 @@ class AllLinksActivity: ComponentActivity(), ItemLinkAdapter.Listener {
                         Toast.makeText(this@AllLinksActivity, "Ошибка ${e.message.toString()}", Toast.LENGTH_SHORT).show()
                     }
 
+                    progressBar.visibility = View.INVISIBLE
                 }
             }
         }
@@ -198,7 +245,7 @@ class AllLinksActivity: ComponentActivity(), ItemLinkAdapter.Listener {
 
     private fun addAllLinks(links: MutableList<String>) {
         Toast.makeText(this, "Найдены все ссылки", Toast.LENGTH_SHORT).show()
-        lifecycleScope.launch(Dispatchers.Default) {
+        lifecycleScope.launch(Dispatchers.IO) {
             var startSeg = 0
             var name = etName.text.toString().let { str ->
                 if (str.contains('[') && str.contains(']'))
@@ -215,11 +262,13 @@ class AllLinksActivity: ComponentActivity(), ItemLinkAdapter.Listener {
                     }
                 }
             }
-            name = name.substringBeforeLast(' ')
+            if(name.split(' ').last().isDigitsOnly())
+                name = name.substringBeforeLast(' ')
+            
             for (index in 0 until links.size) {
-                if(index <= startSeg)
+                if(index < startSeg)
                     continue
-                val listItem = ListItemLink(name = "${name}${index + 1}", link = "https://rutube.ru${links[index]}")
+                val listItem = ListItemLink(name = "$name ${index + 1}", link = "https://rutube.ru${links[index]}")
                 dB.addLink(this@AllLinksActivity, listItem)
             }
             updateList()

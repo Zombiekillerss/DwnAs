@@ -12,12 +12,13 @@ import com.example.dwnas.database.ListItemLink
 import com.example.dwnas.databinding.ListItemBinding
 
 
-class ItemLinkAdapter(private val listener: Listener): ListAdapter<ListItemLink, ItemLinkAdapter.MyHolder>(
+class ItemLinkAdapter(private val listener: Listener, private val isVisibleBIHandle: Boolean = true): ListAdapter<ListItemLink, ItemLinkAdapter.MyHolder>(
     Comparator()
 ) {
     class MyHolder(
         view: View,
-        listener: Listener
+        listener: Listener,
+        isVisibleBIHandle: Boolean
     ) : RecyclerView.ViewHolder(view) {
         private val b = ListItemBinding.bind(view)
         private var item1: ListItemLink? = null
@@ -30,6 +31,14 @@ class ItemLinkAdapter(private val listener: Listener): ListAdapter<ListItemLink,
                 b.bDelObj.setOnClickListener {
                     item1?.let { it1 -> listener.onClickDelete(it1) }
                 }
+                if (isVisibleBIHandle){
+                    b.bIGetMpdLinks.setOnClickListener {
+                        item1?.let { it1 -> listener.onHandle(it1) }
+                    }
+                }else{
+                    b.bIGetMpdLinks.visibility = View.INVISIBLE
+                }
+
             }catch (e:Exception){
             Log.d("myresult request", e.message.toString())
 
@@ -42,7 +51,7 @@ class ItemLinkAdapter(private val listener: Listener): ListAdapter<ListItemLink,
             try {
                 var link = item1!!.link
                 if(link.length > 30)
-                    link = link.substring(0, 30)
+                    link = link.split('/').last().substring(0, 30)
                 tvLink.text = link
                 tvName.text = item1!!.name
             } catch (e: SecurityException) {
@@ -64,7 +73,7 @@ class ItemLinkAdapter(private val listener: Listener): ListAdapter<ListItemLink,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.list_item, parent, false)
-        return MyHolder(view, listener)
+        return MyHolder(view, listener, isVisibleBIHandle)
     }
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
@@ -74,5 +83,6 @@ class ItemLinkAdapter(private val listener: Listener): ListAdapter<ListItemLink,
     interface Listener{
         fun onClickSave(link: ListItemLink)
         fun onClickDelete(link: ListItemLink)
+        fun onHandle(item: ListItemLink)
     }
 }

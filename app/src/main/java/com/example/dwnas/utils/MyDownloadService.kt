@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -58,12 +59,12 @@ class MyDownloadService : Service() {
         Log.d("myresult request", "Загрузка видео")
         val text = outputPath.substring(outputPath.indexOf(":") + 1)
 
-
         val file = File("$text/$fileName.mp4")
 
         var request = YoutubeDLRequest(url).apply {
             addOption("-o", "$text/$fileName.%(ext)s")
             addOption("-f", "bestvideo[height<=$maxQuality]+bestaudio/best[height<=$maxQuality]")
+            addOption("--merge-output-format", "mp4")
             addOption("--no-playlist")
             if(file.exists())
                 addOption("--continue")
@@ -72,13 +73,10 @@ class MyDownloadService : Service() {
             val test = YoutubeDL.getInfo(url)
 
             Log.d("myresult request", test.format.toString())
-
         }catch (e:Exception){
             Log.d("myresult request", "err123" + e.message.toString())
-
         }
         withContext(Dispatchers.IO) {
-
             var flag = true
             while(flag) {
                 flag = false
@@ -102,7 +100,7 @@ class MyDownloadService : Service() {
 
     private fun createNotification(text: String): Notification {
         return NotificationCompat.Builder(this, channelId)
-            .setContentTitle("YouTube Downloader")
+            .setContentTitle("Downloader")
             .setContentText(text)
             .setSmallIcon(R.drawable.ic_download)
             .setPriority(NotificationCompat.PRIORITY_LOW)

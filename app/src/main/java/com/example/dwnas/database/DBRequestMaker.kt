@@ -1,13 +1,16 @@
 package com.example.dwnas.database
 
 import androidx.activity.ComponentActivity
+
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -60,7 +63,7 @@ class DBRequestMaker : ViewModel() {
     suspend fun deleteAllLinks(activity: ComponentActivity): String =
         suspendCancellableCoroutine { continuation ->
             deleteAllLinks(activity) {
-                continuation.resume("+")
+                continuation.resume(it)
             }
         }
 
@@ -83,7 +86,7 @@ class DBRequestMaker : ViewModel() {
         onResult("+")
     }
 
-    fun addCurrentLink(context: ComponentActivity, link: ListItemLink, onResult: (String) -> Unit) {
+    private fun addCurrentLink(context: ComponentActivity, link: ListItemLink, onResult: (String) -> Unit) {
         val db = MainDb.getDb(context).getDao()
         db.insertLink(link)
         onResult("+")
