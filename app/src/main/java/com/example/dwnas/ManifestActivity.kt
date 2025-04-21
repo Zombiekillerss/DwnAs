@@ -100,11 +100,16 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
 
         bSaveLink.setOnClickListener {
             if (etLink.text.toString().contains("rutube.ru/plst")) {
-                Toast.makeText(
-                    this@ManifestActivity,
-                    "Нельзя установить плейлист",
-                    Toast.LENGTH_SHORT
-                ).show()
+                try{
+                    Toast.makeText(
+                        this@ManifestActivity,
+                        "Нельзя установить плейлист",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }catch(e:Exception){
+                    Log.d("myresult request",e.message.toString())
+                }
+
             } else {
                 val item =
                     ListItemLink(name = etName.text.toString(), link = etLink.text.toString())
@@ -164,14 +169,26 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                             Log.d("myresult request", count.toString())
                         } catch (e: Exception) {
                             Log.d("myresult request", e.message.toString())
+                            withContext(Dispatchers.Main) {
+                                try {
+                                    Toast.makeText(
+                                        this@ManifestActivity,
+                                        "Нельзя спарсить в данный момент",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } catch (e: Exception) {
+                                    Log.d("myresult request", e.message.toString())
+
+                                }
+
+                            }
                         }
                     }
+
                     withContext(Dispatchers.Main) {
                         progressBar.visibility = View.INVISIBLE
                     }
                 }
-
-
             }
         }
     }
@@ -237,6 +254,7 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                     }
 
                 }
+                delay(1000)
                 withContext(Dispatchers.Main) {
                     progressBar.visibility = View.INVISIBLE
                 }
@@ -249,8 +267,11 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         if (!item.link.contains("dzen.ru")) {
             return false
         }
+        Log.d("myresult request","test")
+
         withContext(Dispatchers.Main) {
             val signal = loadUrlAndWait(item.link, item.name)
+            Log.d("myresult request",signal)
 
             if (signal == "+") {
                 flag = false

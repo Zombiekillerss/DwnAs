@@ -11,17 +11,22 @@
         android:id="@+id/bGetPlaylist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/rounded_button"
         android:backgroundTint="#20E6D2"
         android:text="сохранить плейлист"
         app:layout_constraintEnd_toEndOf="@+id/bGetLink"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bGetRequest" />
 
     <Button
         android:id="@+id/bParseLinks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="30dp"
         android:background="@drawable/rounded_button"
         android:backgroundTint="#20E6D2"
@@ -35,22 +40,28 @@
         android:id="@+id/bGetLink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="15dp"
         android:background="@drawable/rounded_button"
         android:backgroundTint="#20E6D2"
         android:text="Скачать по ссылке"
         app:layout_constraintBottom_toTopOf="@+id/divider2"
-        app:layout_constraintEnd_toEndOf="@+id/bParseLinks" />
+        app:layout_constraintEnd_toEndOf="@+id/bParseLinks"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/bGetRequest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/rounded_button"
         android:backgroundTint="#20E6D2"
         android:text="сохранить ссылки"
         app:layout_constraintEnd_toEndOf="@+id/bGetLink"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
     <View

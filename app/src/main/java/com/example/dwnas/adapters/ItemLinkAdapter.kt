@@ -32,11 +32,11 @@ class ItemLinkAdapter(private val listener: Listener, private val isVisibleBIHan
                     item1?.let { it1 -> listener.onClickDelete(it1) }
                 }
                 if (isVisibleBIHandle){
-                    b.bIGetMpdLinks.setOnClickListener {
+                    b.bIHandleMpdLinks.setOnClickListener {
                         item1?.let { it1 -> listener.onHandle(it1) }
                     }
                 }else{
-                    b.bIGetMpdLinks.visibility = View.INVISIBLE
+                    b.bIHandleMpdLinks.visibility = View.INVISIBLE
                 }
 
             }catch (e:Exception){
@@ -49,9 +49,9 @@ class ItemLinkAdapter(private val listener: Listener, private val isVisibleBIHan
         fun bind(item: ListItemLink) = with(b) {
             item1 = item
             try {
-                var link = item1!!.link
+                var link = item1!!.link.split('/').last()
                 if(link.length > 30)
-                    link = link.split('/').last().substring(0, 30)
+                    link = link.substring(0, 30)
                 tvLink.text = link
                 tvName.text = item1!!.name
             } catch (e: SecurityException) {
