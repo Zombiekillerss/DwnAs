@@ -163,8 +163,8 @@ class AllLinksActivity: ComponentActivity(), ItemLinkAdapter.Listener {
                         val links = mutableListOf<String>()
                         val str = etName.text.toString()
                         var count = 0
-                        if(str.contains('[') && str.contains(']')){
-                            count = str.substring(str.indexOf('[')+1, str.indexOf(']')).toInt()
+                        if(str.contains(' ') && str.substring(0, str.indexOf(' ')).isDigitsOnly()){
+                            count = str.substring(0, str.indexOf(' ')).toInt()
                         }
                         startScrollAndParse(links, count)
                     }catch (e:Exception){
@@ -248,8 +248,8 @@ class AllLinksActivity: ComponentActivity(), ItemLinkAdapter.Listener {
         lifecycleScope.launch(Dispatchers.IO) {
             var startSeg = 0
             var name = etName.text.toString().let { str ->
-                if (str.contains('[') && str.contains(']'))
-                    str.substring(str.indexOf(']') + 1)
+                if (str.contains(' ') && str.substring(0, str.indexOf(' ')).isDigitsOnly())
+                    str.substring(str.indexOf(' ') + 1)
                 else
                     str
             }

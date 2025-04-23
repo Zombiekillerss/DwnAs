@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#238331"
+    android:background="@drawable/gradient_background_main_menu"
     android:orientation="vertical">
 
     <EditText
@@ -115,8 +115,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:ems="10"
-        android:inputType="text"
         android:hint="Конец сегмента"
+        android:inputType="text"
         android:textColor="#5FF83D"
         android:textColorHint="#5FF83D"
         app:layout_constraintStart_toStartOf="@+id/etQuality"

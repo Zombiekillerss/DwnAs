@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:text="TextView"
-            android:textColor="#30B8F2"
+            android:textColor="#37F3F6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
             android:text="TextView"
-            android:textColor="#30FA95"
+            android:textColor="#1DE24E"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

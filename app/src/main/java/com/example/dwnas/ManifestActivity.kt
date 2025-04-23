@@ -73,8 +73,6 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                     }
                 }
             }
-
-
         }
 
         bIDelAllManifests.setOnClickListener {
@@ -86,7 +84,6 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                     }
                 }
             }
-
         }
 
         bIDelName.setOnClickListener {
@@ -104,11 +101,9 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                 }catch(e:Exception){
                     Log.d("myresult request",e.message.toString())
                 }
-
             } else {
                 val item =
                     ListItemLink(name = etName.text.toString(), link = etLink.text.toString())
-
                 lifecycleScope.launch(Dispatchers.IO) {
                     dB.addLink(this@ManifestActivity, item)
                     updateList()
@@ -123,11 +118,9 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         bHandleLinks.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 val list = itemLinkAdapter.currentList
-
                 var index = 0
                 var count = 0
                 var flag: Boolean
-
                 if (progressBar.visibility == View.VISIBLE) {
                     withContext(Dispatchers.Main) {
                         try {
@@ -138,11 +131,8 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                             ).show()
                         } catch (e: Exception) {
                             Log.d("myresult request", e.message.toString())
-
                         }
-
                     }
-
                 } else {
                     withContext(Dispatchers.Main) {
                         progressBar.visibility = View.VISIBLE
@@ -173,13 +163,11 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                                     ).show()
                                 } catch (e: Exception) {
                                     Log.d("myresult request", e.message.toString())
-
                                 }
 
                             }
                         }
                     }
-
                     withContext(Dispatchers.Main) {
                         progressBar.visibility = View.INVISIBLE
                     }
@@ -262,12 +250,9 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
         if (!item.link.contains("dzen.ru")) {
             return false
         }
-        Log.d("myresult request","test")
 
         withContext(Dispatchers.Main) {
             val signal = loadUrlAndWait(item.link, item.name)
-            Log.d("myresult request",signal)
-
             if (signal == "+") {
                 flag = false
             } else {
@@ -444,13 +429,8 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                 } catch (e: Exception) {
                     Log.d("myresult request", e.message.toString())
                 }
-
-                Log.d("myresult request", "Функция не найдена")
             }
-
-
         }
-
     }
 
     private suspend fun loadUrlAndWait(url: String, name: String) =
@@ -467,7 +447,6 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                     lifecycleScope.launch {
                         tryGetHtml(name, continuation)
                     }
-
                     super.onPageFinished(view, url)
                 }
 
@@ -481,7 +460,6 @@ class ManifestActivity : ComponentActivity(), ItemManifestAdapter.Listener,
                         continuation.resume("-")
                     } catch (e: Exception) {
                         Log.d("myresult request", e.message.toString())
-
                     }
                 }
             }

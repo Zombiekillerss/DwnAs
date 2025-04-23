@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#247C47">
+    android:background="@drawable/gradient_background_main_menu">
 
     <WebView
         android:id="@+id/wv"
@@ -22,8 +22,8 @@
         android:ems="10"
         android:hint="Ссылка"
         android:inputType="text"
-        android:textColor="#30B8F2"
-        android:textColorHint="#30B8F2"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -65,8 +65,8 @@
         android:ems="10"
         android:hint="Название"
         android:inputType="text"
-        android:textColor="#30B8F2"
-        android:textColorHint="#30B8F2"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/etLink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/etLink"
@@ -77,7 +77,7 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminateTint="#2E1AE4"
+        android:indeterminateTint="#071AE4"
         app:layout_constraintBottom_toBottomOf="@+id/rcManifests"
         app:layout_constraintEnd_toEndOf="@+id/rcManifests"
         app:layout_constraintStart_toStartOf="@+id/rcManifests"
@@ -89,21 +89,21 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:backgroundTint="#00CA5959"
+        android:src="@drawable/baseline_clear_24"
         app:layout_constraintBottom_toBottomOf="@+id/etLink"
         app:layout_constraintEnd_toEndOf="@+id/etLink"
         app:layout_constraintTop_toTopOf="@+id/etLink"
-        app:layout_constraintVertical_bias="0.0"
-        android:src="@drawable/baseline_clear_24" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/bIDelName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#00FAFAFA"
+        android:src="@drawable/baseline_clear_24"
         app:layout_constraintBottom_toBottomOf="@+id/etName"
         app:layout_constraintEnd_toEndOf="@+id/etName"
-        app:layout_constraintTop_toTopOf="@+id/etName"
-        android:src="@drawable/baseline_clear_24" />
+        app:layout_constraintTop_toTopOf="@+id/etName" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/purple_200"
-    android:backgroundTint="#247C47">
+    android:background="@drawable/gradient_background_main_menu">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -81,9 +80,8 @@
         android:ems="10"
         android:hint="Ссылка"
         android:inputType="text"
-        android:text="https://rutube.ru/plst/570974"
-        android:textColor="#30B8F2"
-        android:textColorHint="#30B8F2"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -110,10 +108,10 @@
         android:layout_marginStart="11dp"
         android:layout_marginEnd="10dp"
         android:ems="10"
-        android:hint="[3=3эл] Н {3 = 3 4 5}"
+        android:hint="3=3эл Н 3=3.4.5"
         android:inputType="text"
-        android:textColor="#30B8F2"
-        android:textColorHint="#30B8F2"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/etLink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/etLink"
