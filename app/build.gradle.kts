@@ -13,8 +13,8 @@ android {
 
     defaultConfig {
         applicationId = "com.example.dwnas"
-        minSdk = 34
-        targetSdk = 34
+        minSdk = 31
+        targetSdk = 31
         versionCode = 1
         versionName = "1.0"
         multiDexEnabled = true
@@ -32,7 +32,7 @@ android {
             }
         }
     }
-//        android:roundIcon="@drawable/rounded_button"
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -64,8 +64,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.library.v0172)
     implementation(libs.ffmpeg)
+    implementation(libs.library.v0160)
     implementation (libs.rangeseekbar.library)
     implementation(libs.androidx.webkit)
     implementation(libs.androidx.cardview)

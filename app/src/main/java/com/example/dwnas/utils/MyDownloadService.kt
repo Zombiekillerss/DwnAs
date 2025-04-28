@@ -9,16 +9,16 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.dwnas.R
-import com.yausername.youtubedl_android.YoutubeDL
-import com.yausername.youtubedl_android.YoutubeDLRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import com.yausername.youtubedl_android.YoutubeDL
+import com.yausername.youtubedl_android.YoutubeDLRequest
 
 
 class MyDownloadService : Service() {
@@ -62,13 +62,14 @@ class MyDownloadService : Service() {
         val file = File("$text/$fileName.mp4")
 
         var request = YoutubeDLRequest(url).apply {
-            addOption("-o", "$text/$fileName.%(ext)s")
-            addOption("-f", "bestvideo[height<=$maxQuality]+bestaudio/best[height<=$maxQuality]")
+            addOption("-o", "$text/$fileName.mp4")
+            addOption("-f", "best[height<=$maxQuality]")
             addOption("--merge-output-format", "mp4")
             addOption("--no-playlist")
             if(file.exists())
                 addOption("--continue")
         }
+
         try {
             val test = YoutubeDL.getInfo(url)
 
@@ -76,6 +77,7 @@ class MyDownloadService : Service() {
         }catch (e:Exception){
             Log.d("myresult request", "err123" + e.message.toString())
         }
+
         withContext(Dispatchers.IO) {
             var flag = true
             while(flag) {
@@ -83,7 +85,7 @@ class MyDownloadService : Service() {
                 Log.d("myresult request", "$outputPath/$fileName")
                 try {
                     YoutubeDL.getInstance().execute(request) { progress, seconds, message ->
-                        updateNotification("data to dwn: $message ::: $seconds ::: $progress")
+                        updateNotification("data to dwn: [$message ::: $seconds ::: $progress]")
                     }
                 } catch (e: Exception) {
                     flag = true
@@ -113,6 +115,10 @@ class MyDownloadService : Service() {
         val notification = createNotification(text)
         val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         manager.notify(1, notification)
+        val str = text.substring(text.indexOf('[') - 1, text.lastIndexOf(']'))
+        val list = str.split(" ::: ")
+
+        _state.update { DownloadState.Progress(list.last().toDouble(), list[list.size - 2].toLong()) }
     }
 
     private fun createNotificationChannel() {

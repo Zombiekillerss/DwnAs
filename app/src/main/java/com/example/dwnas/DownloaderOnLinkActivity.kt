@@ -189,6 +189,7 @@ class DownloaderOnLinkActivity : ComponentActivity() {
                     progress = state.percent.toInt()
                     textResult = "Загружено: ${state.percent.toInt()}%"
                     Log.d("myresult request", textResult)
+                    tvSegments.text = textResult
                 }
 
                 is DownloadState.Success -> {
@@ -205,7 +206,9 @@ class DownloaderOnLinkActivity : ComponentActivity() {
                     textResult = "Ошибка: ${state.message}"
                 }
 
-                else -> {}
+                else -> {
+
+                }
             }
             Log.d("myresult request", progress.toString())
         }
